@@ -16,9 +16,11 @@ return new class extends Migration
             $table->id();
             $table->string('product_name', 100);
             $table->string('product_description', 100);
-            $table->string('product_image', 100);
+            $table->string('product_image', 100)->nullable();
+            $table->text('images')->nullable();
             $table->double('product_price');
             $table->integer('product_stock');
+            $table->string('product_status', 100)->default('available')->comment('available, unavailable');
             $table->foreignIdFor(Category::class);
             $table->timestamps();
         });

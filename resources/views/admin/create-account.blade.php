@@ -5,11 +5,10 @@
     <div class="max-w-4xl mx-auto p-2">
         <h2 class="text-4xl font-extrabold mb-4 py-8">Admin: Progressing Events</h2>
 
-        {{-- Replace this part with the "create account" view content --}}
         <div class="max-w-4xl mx-auto p-2">
             <h2 class="text-4xl font-extrabold mb-4 py-8">Create User or Staff Account</h2>
 
-            <form method="POST" action="{{ route('admin.createAccount') }}">
+            <form method="POST" action="{{ route('admin.create-account') }}">
                 @csrf
                 <div class="mb-4">
                     <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
@@ -22,8 +21,13 @@
                 </div>
 
                 <div class="mb-4">
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" name="password" id="password" class="form-input rounded-md shadow-sm mt-1 block w-full" />
+                    <label for="phone_number" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                    <input type="string" name="phone_number" id="phone_number" class="form-input rounded-md shadow-sm mt-1 block w-full" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
+                    <input type="string" name="address" id="address" class="form-input rounded-md shadow-sm mt-1 block w-full" />
                 </div>
 
                 <div class="mb-4">
@@ -33,6 +37,13 @@
                         <option value="staff">Staff</option>
                     </select>
                 </div>
+
+                <div class="mb-4">
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input type="password" name="password" id="password" class="form-input rounded-md shadow-sm mt-1 block w-full" />
+                </div>
+
+                
 
                 <button type="submit" class="px-4 py-2 font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
                     Create Account

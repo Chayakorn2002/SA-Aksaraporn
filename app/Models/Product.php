@@ -12,6 +12,19 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'description',
+        'price',
+        'category_id',
+        'stock',
+        'images',
+    ];
+
+    protected $casts = [
+        'images' => 'array',
+    ];
+
     public function orders() : BelongsToMany
     {
         return $this->belongsToMany(Order::class);
@@ -24,6 +37,6 @@ class Product extends Model
 
     public function images() : HasMany
     {
-        return $this->hasMany(ImageCatalogue::class);
+        return $this->hasMany(ImageCatalogue::class, 'product_id');
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Psy\Readline\Hoa\Console;
 
 class AdminController extends Controller
 {
@@ -76,19 +77,38 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8',
+            'phone_number' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
             'role' => 'required|in:user,staff',
         ]);
 
-        $user = User::create([
-            'name' => $validatedData['name'],
-            'email' => $validatedData['email'],
-            'password' => Hash::make($validatedData['password']),
-            'role' => $validatedData['role'],
-        ]);
+        $user = new User();
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        $user->phone_number = $request->phone_number;
+        $user->address = $request->address;
+        $user->password = Hash::make($validatedData['password']);
+
+        if ($validatedData['role'] == 'staff') {
+            $user->role = 'STAFF';
+        } else if ($validatedData['role'] == 'user') {
+            $user->role = 'USER';
+        }
+
+        $user->save();
+
+        // $user = User::create([
+        //     'name' => $validatedData['name'],
+        //     'email' => $validatedData['email'],
+        //     'phone_number' => $request->phone_number,
+        //     'address' => $request->address,
+        //     'password' => Hash::make($validatedData['password']),
+        //     'role' => $validatedData['role'],
+        // ]);
 
         // Redirect back with a success message or handle errors
         if (isset($user) || isset($staff)) {
-            return redirect()->route('admin.index')->with('success', 'Account created successfully.');
+            return redirect()->route('home.index')->with('success', 'Account created successfully.');
         } else {
             return back()->with('error', 'Account creation failed.');
         }
