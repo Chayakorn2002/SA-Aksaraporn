@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -62,5 +63,34 @@ class AdminController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function showCreateAccountForm()
+    {
+        return view('admin.create-account');
+    }
+
+    public function createAccount(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:user,staff',
+        ]);
+
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+            'role' => $validatedData['role'],
+        ]);
+
+        // Redirect back with a success message or handle errors
+        if (isset($user) || isset($staff)) {
+            return redirect()->route('admin.index')->with('success', 'Account created successfully.');
+        } else {
+            return back()->with('error', 'Account creation failed.');
+        }
     }
 }
