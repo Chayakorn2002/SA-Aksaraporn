@@ -77,9 +77,11 @@ Route::get(
 )->name('staff.products.edit');
 
 Route::put(
-    'staff/products/{product}', 
-    [ProductController::class, 'updateEachProduct']
+    'staff/products/{id}', 
+    [StaffController::class, 'updateEachProduct']
 )->name('staff.products.update');
+
+
 
 // End of products
 

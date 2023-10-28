@@ -7,6 +7,7 @@ use App\Models\ImageCatalogue;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class StaffController extends Controller
 {
@@ -108,7 +109,15 @@ class StaffController extends Controller
             'product_price' => 'required',
             'product_stock' => 'required',
             'product_status' => 'required|in:available,unavailable',
+            'images' => 'array', // Ensure that images is an array
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Define rules for each image
+            'category_id' => 'required'
         ]);
+
+        $product = Product::find($request->input('product_id'));
+
+        // Get the paths of the existing images
+        $existingImages = $product->images;
 
         // Handle image updates
         if ($request->hasFile('images')) {
@@ -119,11 +128,23 @@ class StaffController extends Controller
                 $images[] = $imagePath;
             }
             $validatedData['images'] = $images;
+
+            // Delete the existing images from the storage
+            foreach ($existingImages as $existingImage) {
+                Storage::disk('public')->delete($existingImage);
+            }
         }
 
-        $product->update($validatedData);
+        $product->product_name = $validatedData['product_name'];
+        $product->product_description = $validatedData['product_description'];
+        $product->product_price = $validatedData['product_price'];
+        $product->product_stock = $validatedData['product_stock'];
+        $product->product_status = $validatedData['product_status'];
+        $product->images = $validatedData['images'];
+        $product->category_id = $request->category_id;
+        $product->save();
 
-        return redirect()->route('products.show', $product->id)
+        return redirect()->route('staff.products.show', $product->id)
             ->with('success', 'Product updated successfully');
     }
 

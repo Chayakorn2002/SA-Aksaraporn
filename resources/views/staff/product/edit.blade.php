@@ -9,6 +9,7 @@
                 @csrf
                 @method('PUT') <!-- This is important to specify the HTTP method as PUT for updating -->
 
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
                 <!-- Input field for editing the product name -->
                 <div class="mb-4">
                     <label for="product_name" class="block text-sm font-medium text-gray-700">Product Name</label>
@@ -48,6 +49,16 @@
                         </option>
                         <option value="unavailable" {{ $product->product_status == 'unavailable' ? 'selected' : '' }}>
                             Unavailable</option>
+                    </select>
+                </div>
+
+                <!-- Input field for editing the product category -->
+                <div class="mb-4">
+                    <label for="category_id" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select name="category_id" id="category_id" class="form-select rounded-md shadow-sm mt-1 block w-full">
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                        @endforeach
                     </select>
                 </div>
 

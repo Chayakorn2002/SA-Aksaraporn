@@ -5,7 +5,7 @@
         <div class="max-w-4xl mx-auto p-2">
             <h2 class="text-4xl font-extrabold mb-4 py-8">Product Dashboard</h2>
 
-            <div class="flex items-center w-full justify-between">
+            {{-- <div class="flex items-center w-full justify-between">
                 <ul class="flex flex-row font-medium mt-0 mr-6 space-x-8 text-sm">
                     @foreach ($categories as $category)
                         <li>
@@ -22,9 +22,9 @@
                     <a href="{{ route('staff.products', ['category' => 'by-category']) }}"
                         class="text-blue-500 hover:underline">Products by Category</a>
                 </li>
-            </ul>
+            </ul> --}}
 
-            <h2 class="text-2xl font-extrabold mb-4 py-8">Products</h2>
+            {{-- <h2 class="text-2xl font-extrabold mb-4 py-8">Products</h2> --}}
 
             <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 
