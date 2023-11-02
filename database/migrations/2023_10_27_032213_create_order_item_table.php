@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_item', function (Blueprint $table) {
+        Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Order::class);
             $table->foreignIdFor(Product::class);
             $table->integer('quantity');
-            $table->double('unit_price');
-            $table->double('total_price');
             $table->timestamps();
         });
     }

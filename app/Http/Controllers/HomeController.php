@@ -20,7 +20,7 @@ class HomeController extends Controller
         } else if (Gate::allows('isStaff', auth()->user())) {
             return view('staff.order.index', ['orders' => Order::all()]);
         } else if (Gate::allows('isUser', auth()->user())) {
-            return view('user.index', ['users' => User::all()]);
+            return view('user.index', ['products' => Product::all()]);
         }
         else {
             return view('auth.login', ['users' => User::all()]);

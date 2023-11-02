@@ -14,7 +14,7 @@
                         @if (Route::has('login'))
                             <div class="flex items-center">
                                 @Auth
-                                    <a href="{{ route('user.index') }}">
+                                    <a href="{{ route('home.index') }}">
                                         <div class="max-w-4xl mx-auto p-2">
                                             <div class="font-bold m-4 text-lg">
                                                 {{ Auth::user()->name }}
@@ -69,6 +69,22 @@
                             <a href="{{ route('staff.products') }}" class="text-gray-900 hover:underline">Products</a>
                         </li>
                     @endif
+
+                    {{-- User --}}
+                    {{-- @if (Auth::user()->role !== 'STAFF') 
+                    <li>
+                        <a href="{{ url('/') }}" class="text-gray-900 hover:underline" aria-current="page">Home</a>
+                    </li>
+                    @endif --}}
+                    {{-- Staff --}}
+                    @if (Auth::user()->role === 'USER')
+                        <li>
+                            <a href="{{ route('order.history') }}" class="text-gray-900 hover:underline">Orders</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('profile.edit') }}" class="text-gray-900 hover:underline">Profile</a>
+                        </li>
+                    @endif 
 
                     {{-- <li>
                         <a href="{{ route('events.index') }}" class="text-gray-900 hover:underline">All Events</a>

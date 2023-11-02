@@ -33,6 +33,16 @@ class UserSeeder extends Seeder
             'status' => 'active',
             'password' => Hash::make('password'),
         ]);
+
+        User::factory()->create([
+            'name' => 'Customer',
+            'email' => 'user@gmail.com',
+            'role' => 'USER',
+            'phone_number' => '1234567890',
+            'address' => 'Customer Address',
+            'status' => 'active',
+            'password' => Hash::make('password'),
+        ]);
         
         User::factory(10)->create();
     }

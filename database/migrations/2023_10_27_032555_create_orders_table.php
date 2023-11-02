@@ -14,15 +14,15 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->constrained();
             $table->string('order_name', 100);
-            $table->double('total_price');
-            $table->string('order_status', 100);
+            $table->double('total_price')->default(0);
+            $table->string('order_status', 100)->default('pending')->comment('pending, confirmed, processing, completed');
             
             // user's information for each orders
-            $table->string('order_address', 100);
-            $table->string('order_phone', 100);
-            $table->string('order_email', 100);
+            $table->string('order_address', 100)->nullable();
+            $table->string('order_phone', 100)->nullable();
+            $table->string('order_email', 100)->nullable();
 
             $table->timestamps();
         });

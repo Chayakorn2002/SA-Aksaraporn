@@ -106,11 +106,70 @@ Route::post(
 
 /***  End of staff routes ***/
 
+/***  Begin of User routes ***/
+
+
+
+/***  End of User routes ***/
+
+/*** Begin of Product routes ***/
+
+Route::get(
+    '/products',
+    [ProductController::class, 'index']
+)->name('products.index');
+
+// Route::get(
+//     '/products/{id}',
+//     [ProductController::class, 'show']
+// )->name('products.show');
+
+/*** End of Product routes ***/
+
+/***  Begin of Order routes ***/
+
+Route::get(
+    '/order-history',
+    [OrderController::class, 'showOrderHistory']
+)->name('order.history');
+
+Route::get(
+   '/product/{id}',
+   [OrderController::class, 'showAddOrderItem'] 
+)->name('order.add-order-item');
+
+// Route::post(
+//     '/product/{id}',
+//     [OrderController::class, 'addToOrder']
+// )->name('order.create-order');
+
+Route::post(
+    '/product/{id}',
+    [OrderController::class, 'addOrderItemToOrder']
+)->name('order.add-order-item-to-order');
+
+Route::get(
+    '/cart',
+    [OrderController::class, 'showCart']
+)->name('order.show-cart');
+
+Route::get(
+    '/cart/edit',
+    [OrderController::class, 'showEditCurrentOrderForm']
+)->name('order.edit-cart');
+
+Route::put(
+    '/cart/edit',
+    [OrderController::class, 'updateCurrentOrder']
+)->name('order.update-cart');
+
+Route::delete(
+    '/cart/edit/{orderItem}',
+    [OrderController::class, 'deleteOrderItem']
+)->name('order.delete-order-item');
+
+/***  End of Order routes ***/
+
 Route::resource('user', UserController::class);
-
-Route::resource('product', ProductController::class);
-
-Route::resource('order', OrderController::class);
-
 
 require __DIR__ . '/auth.php';

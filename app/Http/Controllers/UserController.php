@@ -2,18 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+
+    public function showOrders()
+    {
+        $user = Auth::user();
+        $orders = $user->orders()->get();
+        return view('user.orders', [
+            'orders' => $orders,
+        ]);
+    }
+    
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('user.index', ['user' => Auth::user()]);
+        return view('user.index', ['user' => Auth::user(), 'products' => Product::all()]);
     }
 
     /**

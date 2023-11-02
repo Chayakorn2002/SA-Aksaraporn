@@ -18,4 +18,14 @@ class UserPolicy
     {
         return $user->role === "USER";   
     }
+
+    public function isStaff(User $user) : bool
+    {
+        return $user->role === "STAFF";   
+    }
+
+    public function isAdmin(User $user) : bool
+    {
+        return $user->role === "ADMIN";   
+    }
 }

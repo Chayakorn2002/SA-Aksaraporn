@@ -13,13 +13,12 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_name',
-        'product_description',
-        'product_price',
-        'product_stock',
-        'product_status',
-        'images', // If you are storing images as an array
+        'name',
+        'description',
+        'price',
         'category_id',
+        'stock',
+
     ];
 
     protected $casts = [
