@@ -39,7 +39,15 @@ class Order extends Model
     {
         $totalPrice = 0;
 
-        foreach ($this->orderItems as $orderItem) {
+        // Reload the order items relationship to exclude deleted items
+        $this->load('orderItems');
+
+        // Filter out order items with a quantity of zero or less
+        $filteredOrderItems = $this->orderItems->filter(function ($orderItem) {
+            return $orderItem->quantity > 0;
+        });
+
+        foreach ($filteredOrderItems as $orderItem) {
             $totalPrice += $orderItem->product->product_price * $orderItem->quantity;
         }
 

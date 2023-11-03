@@ -163,6 +163,11 @@ Route::put(
     [OrderController::class, 'updateCurrentOrder']
 )->name('order.update-cart');
 
+Route::get(
+    '/cart/edit/{orderItem}',
+    [OrderController::class, 'showOrderItemDetail']
+)->name('order.show-each-order-item');
+
 Route::delete(
     '/cart/edit/{orderItem}',
     [OrderController::class, 'deleteOrderItem']

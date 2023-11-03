@@ -111,19 +111,30 @@ class OrderController extends Controller
         if ($order) {
             $data = $request->validate([
                 'quantity' => 'required|array',
-                'quantity.*' => 'required|integer|min:1',
+                'quantity.*' => 'required|integer|min:0',
             ]);
 
-            foreach ($order->orderItems as $orderItem) {
-                $newQuantity = $data['quantity'][$orderItem->id];
-                if ($newQuantity <= 0) {
-                    // If the quantity is set to 0 or less, remove the order item
-                    $orderItem->delete();
-                } else {
-                    // Update the quantity of the order item
-                    $orderItem->quantity = $newQuantity;
-                    $orderItem->save();
+            // Get the order items associated with the current order
+            $orderItems = $order->orderItems;
+
+            $i = 0;
+            foreach ($orderItems as $orderItem) {
+                // $orderItemId = $orderItem->id;
+
+                // Check if the order item ID exists in the request data
+                if (isset($data['quantity'][$i])) {
+                    $newQuantity = $data['quantity'][$i];
+
+                    if ($newQuantity <= 0) {
+                        // If the quantity is set to 0 or less, remove the order item
+                        $orderItem->delete();
+                    } else {
+                        // Update the quantity of the order item
+                        $orderItem->quantity = $newQuantity;
+                        $orderItem->save();
+                    }
                 }
+                $i++;
             }
 
             // Update the total price of the order
@@ -135,9 +146,25 @@ class OrderController extends Controller
         return redirect()->route('order.edit-cart')->with('error', 'No active order to update');
     }
 
-    public function deleteOrderItem(OrderItem $orderItem, Request $request)
+    public function showOrderItemDetail(OrderItem $orderItem)
     {
-        $order = auth()->user()->currentOrder;
+        return view('order.show-order-item', [
+            'orderItem' => $orderItem,
+        ]);
+    }
+
+    // public function deleteOrderItem(OrderItem $orderItem)
+    // {
+    //     // Delete the order item and handle any necessary logic
+    //     $success = $orderItem->delete();
+
+    //     return response()->json(['success' => $success]);
+    // }
+
+
+    public function deleteOrderItem(OrderItem $orderItem)
+    {
+        $order = auth()->user()->getCurrentOrder();
 
         if ($order) {
             // Check if the order item belongs to the current order
@@ -145,9 +172,9 @@ class OrderController extends Controller
                 $orderItem->delete();
                 // Update the total price of the order
                 $order->updateTotalPrice();
-                return redirect()->route('order.edit')->with('success', 'Order item deleted successfully');
+                return redirect()->route('order.edit-cart')->with('success', 'Order item deleted successfully');
             } else {
-                return redirect()->route('order.edit')->with('error', 'Order item does not belong to your current order');
+                return redirect()->route('order.edit-cart')->with('error', 'Order item does not belong to your current order');
             }
         }
 

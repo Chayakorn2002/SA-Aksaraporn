@@ -55,10 +55,11 @@
                 <ul class="flex flex-row font-medium mt-0 mr-6 space-x-8 text-sm">
 
                     {{-- Default --}}
-                    @if (Auth::user()->role !== 'STAFF') 
-                    <li>
-                        <a href="{{ url('/') }}" class="text-gray-900 hover:underline" aria-current="page">Home</a>
-                    </li>
+                    @if (Auth::user()->role !== 'STAFF')
+                        <li>
+                            <a href="{{ url('/') }}" class="text-gray-900 hover:underline"
+                                aria-current="page">Home</a>
+                        </li>
                     @endif
                     {{-- Staff --}}
                     @if (Auth::user()->role === 'STAFF')
@@ -79,12 +80,17 @@
                     {{-- Staff --}}
                     @if (Auth::user()->role === 'USER')
                         <li>
+                            <a href="{{ route('order.show-cart') }}" class="text-gray-900 hover:underline">Cart</a>
+                        </li>
+
+                        <li>
                             <a href="{{ route('order.history') }}" class="text-gray-900 hover:underline">Orders</a>
                         </li>
+
                         <li>
                             <a href="{{ route('profile.edit') }}" class="text-gray-900 hover:underline">Profile</a>
                         </li>
-                    @endif 
+                    @endif
 
                     {{-- <li>
                         <a href="{{ route('events.index') }}" class="text-gray-900 hover:underline">All Events</a>
