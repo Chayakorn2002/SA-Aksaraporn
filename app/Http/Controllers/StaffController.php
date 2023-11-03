@@ -11,10 +11,27 @@ use Illuminate\Support\Facades\Storage;
 
 class StaffController extends Controller
 {
+    /***        Product Related Methods        ***/
     public function showOverallProductView()
     {
         return view('staff.product.index', [
             'products' => Product::all(),
+            'categories' => Category::all(),
+        ]);
+    }
+
+    public function showAvailableProductView()
+    {
+        return view('staff.product.index', [
+            'products' => Product::where('product_status', 'available')->get(),
+            'categories' => Category::all(),
+        ]);
+    }
+
+    public function showUnavailableProductView()
+    {
+        return view('staff.product.index', [
+            'products' => Product::where('product_status', 'unavailable')->get(),
             'categories' => Category::all(),
         ]);
     }
@@ -32,11 +49,9 @@ class StaffController extends Controller
             'product_name' => 'required|max:100',
             'product_description' => 'required|max:100',
             'product_price' => 'required',
+            'product_minimum_quantity' => 'required',
             'product_stock' => 'required',
             'category_id' => 'required',
-            // 'images' => 'required|array',
-            // 'product_images' => 'array', // Ensure that product_images is an array
-            // 'product_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Define rules for each image
         ]);
 
         $images = [];
@@ -51,37 +66,18 @@ class StaffController extends Controller
 
         $validatedData['images'] = $images;
 
-        // Product::create($validatedData);
-
         $product = new Product();
-
         $product->product_name = $validatedData['product_name'];
         $product->product_description = $validatedData['product_description'];
         $product->product_price = $validatedData['product_price'];
+        $product->product_minimum_quantity = $validatedData['product_minimum_quantity'];
         $product->product_stock = $validatedData['product_stock'];
         $product->category_id = $validatedData['category_id'];
         $product->images = $validatedData['images'];
 
-        // // Upload and store images
-        // // if ($request->hasFile('product_images')) {
-        // //     $images = [];
-        // //     foreach ($request->file('product_images') as $image) {
-        // //         $imageName = time() . '_' . $image->getClientOriginalName();
-        // //         $image->storeAs('product_images', $imageName, 'public');
-        // //         $images[] = $imageName;
-        // //     }
-        // //     $product->images = $images;
-        // // }
+        $product->checkStockAndChangeStatus();
 
         $product->save();
-
-        // foreach ($request->file('images') as $imagefile) {
-        //     $image = new ImageCatalogue();
-        //     $path = $imagefile->store('/images/resource', ['disk' =>   'my_files']);
-        //     $image->image_url = $path;
-        //     $image->product_id = $product->id;
-        //     $image->save();
-        //   }
 
         return redirect()->route('staff.products');
     }
@@ -107,6 +103,7 @@ class StaffController extends Controller
             'product_name' => 'required|max:100',
             'product_description' => 'required|max:100',
             'product_price' => 'required',
+            'product_minimum_quantity' => 'required', // This assumes you have a minimum quantity of 1.
             'product_stock' => 'required',
             'product_status' => 'required|in:available,unavailable',
             'images' => 'array', // Ensure that images is an array
@@ -129,18 +126,28 @@ class StaffController extends Controller
             }
             $validatedData['images'] = $images;
 
-            // Delete the existing images from the storage
-            foreach ($existingImages as $existingImage) {
-                Storage::disk('public')->delete($existingImage);
+            // Check if there are existing images
+            if ($existingImages) {
+                // Delete the existing images from the storage
+                foreach ($existingImages as $existingImage) {
+                    Storage::disk('public')->delete($existingImage);
+                }
             }
         }
+
 
         $product->product_name = $validatedData['product_name'];
         $product->product_description = $validatedData['product_description'];
         $product->product_price = $validatedData['product_price'];
+        $product->product_minimum_quantity = $validatedData['product_minimum_quantity'];
         $product->product_stock = $validatedData['product_stock'];
         $product->product_status = $validatedData['product_status'];
-        $product->images = $validatedData['images'];
+
+        // Check if "images" key exists in the validated data
+        if (array_key_exists('images', $validatedData)) {
+            $product->images = $validatedData['images'];
+        }
+        
         $product->category_id = $request->category_id;
         $product->save();
 
@@ -148,14 +155,53 @@ class StaffController extends Controller
             ->with('success', 'Product updated successfully');
     }
 
+    /***        End of Product Related Methods        ***/
 
-    public function showOverallOrderView()
+    /***        Order Related Methods        ***/
+
+    public function showOverallOrder()
     {
         return view('staff.order.index', [
             'orders' => Order::all()
         ]);
     }
 
+    public function showPendingOrder()
+    {
+        return view('staff.order.index', [
+            'orders' => Order::where('order_status', 'pending')->get()
+        ]);
+    }
+
+    public function showConfirmedOrder()
+    {
+        return view('staff.order.index', [
+            'orders' => Order::where('order_status', 'confirmed')->get()
+        ]);
+    }
+
+    public function showProcessingOrder()
+    {
+        return view('staff.order.index', [
+            'orders' => Order::where('order_status', 'processing')->get()
+        ]);
+    }
+
+    public function showCompletedOrder()
+    {
+        return view('staff.order.index', [
+            'orders' => Order::where('order_status', 'completed')->get()
+        ]);
+    }
+
+    public function showEachOrderView($id)
+    {
+        return view('staff.order.show', [
+            'order' => Order::find($id)
+        ]);
+    }
+
+    /***        End of Order Related Methods        ***/
 
     public function showAddCategoryForm()
     {
@@ -179,5 +225,23 @@ class StaffController extends Controller
         $category->save();
 
         return redirect()->route('staff.products');
+    }
+
+    public function updateOrderStatusConfirmedToProcessing($id)
+    {
+        $order = Order::find($id);
+        $order->order_status = 'processing';
+        $order->save();
+
+        return redirect()->route('staff.show-each-order', $id);
+    }
+
+    public function updateOrderStatusProcessingToCompleted($id)
+    {
+        $order = Order::find($id);
+        $order->order_status = 'completed';
+        $order->save();
+
+        return redirect()->route('staff.show-each-order', $id);
     }
 }

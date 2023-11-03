@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('product_image', 100)->nullable();
             $table->text('images')->nullable();
             $table->double('product_price');
+            $table->integer('product_minimum_quantity');
             $table->integer('product_stock');
             $table->string('product_status', 100)->default('available')->comment('available, unavailable');
             $table->foreignIdFor(Category::class);

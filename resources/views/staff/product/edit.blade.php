@@ -33,6 +33,12 @@
                         class="form-input rounded-md shadow-sm mt-1 block w-full" value="{{ $product->product_price }}">
                 </div>
 
+                <div class="mb-4">
+                    <label for="product_minimum_quantity" class="block text-sm font-medium text-gray-700">Product Minimum Quantity</label>
+                    <input type="number" name="product_minimum_quantity" id="product_minimum_quantity"
+                        class="form-input rounded-md shadow-sm mt-1 block w-full" value="{{ $product->product_minimum_quantity }}" />
+                </div> 
+
                 <!-- Input field for editing the product stock -->
                 <div class="mb-4">
                     <label for="product_stock" class="block text-sm font-medium text-gray-700">Product Stock</label>

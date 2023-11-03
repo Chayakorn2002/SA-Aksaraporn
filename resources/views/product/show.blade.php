@@ -9,6 +9,7 @@
                 <h3 class="text-lg font-semibold mb-2">{{ $product->product_name }}</h3>
                 <p class="text-sm text-gray-500">Description: {{ $product->product_description }}</p>
                 <p class="text-sm text-gray-500">Price: ${{ number_format($product->product_price, 2) }}</p>
+                <p class="text-sm text-gray-500">Minimum: {{ $product->product_minimum_quantity }}</p> 
                 <p class="text-sm text-gray-500">Stock: {{ $product->product_stock }}</p>
                 <p class="text-sm text-gray-500">Status: {{ $product->product_status }}</p>
                 <p class="text-sm text-gray-500">Category: {{ $product->category->category_name }}</p>

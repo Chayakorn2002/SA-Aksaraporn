@@ -10,45 +10,56 @@ use Illuminate\Support\Facades\Auth;
 class UserController extends Controller
 {
 
-    public function showOrders()
+    public function showUserProfile()
     {
         $user = Auth::user();
-        $orders = $user->orders()->get();
-        return view('user.orders', [
-            'orders' => $orders,
+        return view('user.profile', [
+            'user' => $user,
         ]);
     }
-    
+    public function showEditProfileForm()
+    {
+        $user = Auth::user();
+        return view('user.edit-profile', [
+            'user' => $user,
+        ]);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'phone_number' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'password' => 'nullable|string|min:6|confirmed',
+        ]);
+
+        // Get the authenticated user
+        $user = auth()->user();
+
+        // Update phone number and address
+        $user->phone_number = $validatedData['phone_number'];
+        $user->address = $validatedData['address'];
+
+        // Update password if provided
+        if ($request->filled('password')) {
+            $user->password = bcrypt($validatedData['password']);
+        }
+
+        // Save the user
+        $user->save();
+
+        // Redirect back with a success message
+        return redirect()->route('user.profile')->with('success', 'Profile updated successfully.');
+    }
+
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         return view('user.index', ['user' => Auth::user(), 'products' => Product::all()]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
     }
 
     /**
@@ -94,17 +105,9 @@ class UserController extends Controller
         if ($user_address == null) {
             $user->address = Auth::user()->address;
         }
-       
+
         $user->save();
 
         return redirect()->route('user.index', $user);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

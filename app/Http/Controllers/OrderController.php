@@ -14,14 +14,54 @@ class OrderController extends Controller
     {
         // Get the authenticated user's current order and past orders
         $user = auth()->user();
-        $orders = $user->orders()->get();
-        $currentOrder = $user->orders()->where('order_status', 'pending')->first();
-        $pastOrders = $user->orders()->where('order_status', 'completed')->get();
 
         return view('order.history', [
-            'currentOrder' => $currentOrder,
-            'pastOrders' => $pastOrders,
-            'orders' => $orders,
+            'orders' => $user->orders()->get(),
+        ]);
+    }
+
+    public function showPendingOrder() {
+        $user = auth()->user();
+        $orders = $user->orders()->where('order_status', 'pending');
+
+        return view('order.history', [
+            'orders' => $orders->get(),
+        ]);
+    }
+
+    public function showConfirmedOrder() {
+        $user = auth()->user();
+        $orders = $user->orders()->where('order_status', 'confirmed');
+
+        return view('order.history', [
+            'orders' => $orders->get(),
+        ]);
+    } 
+
+    public function showProcessingOrder() {
+        $user = auth()->user();
+        $orders = $user->orders()->where('order_status', 'processing');
+
+        return view('order.history', [
+            'orders' => $orders->get(),
+        ]);
+    }
+
+    public function showCompletedOrder() {
+        $user = auth()->user();
+        $orders = $user->orders()->where('order_status', 'completed');
+
+        return view('order.history', [
+            'orders' => $orders->get(),
+        ]);
+    }
+
+    public function showEachOrder($id)
+    {
+        $order = Order::find($id);
+
+        return view('order.show', [
+            'order' => $order,
         ]);
     }
 
@@ -52,8 +92,13 @@ class OrderController extends Controller
 
         // Validate the input (quantity)
         $request->validate([
-            'quantity' => 'required|integer|min:1|max:' . $product->product_stock,
+            'quantity' => 'required|integer|min:' . $product->product_minimum_quantity . '|max:' . $product->product_stock,
+        ], [
+            'quantity.required' => 'Please fill in the quantity.',
+            'quantity.min' => 'The quantity must be at least ' . $product->product_minimum_quantity . '.',
+            'quantity.max' => 'The quantity cannot exceed the available stock of ' . $product->product_stock . '.',
         ]);
+
 
         // Check if the current order exists; if not, create a new order
         if (!$currentOrder) {
@@ -90,8 +135,6 @@ class OrderController extends Controller
         session()->flash('success', $message);
 
         return redirect()->route('home.index'); // Redirect to the user's home page
-
-        // return redirect()->back()->with('success', 'Product added to the order');
     }
 
     public function showEditCurrentOrderForm()
@@ -146,12 +189,55 @@ class OrderController extends Controller
         return redirect()->route('order.edit-cart')->with('error', 'No active order to update');
     }
 
-    public function showOrderItemDetail(OrderItem $orderItem)
+    public function showPaymentForm()
     {
-        return view('order.show-order-item', [
-            'orderItem' => $orderItem,
+        // Generate the PromptPay QR code (You should use a library or service to generate this)
+        $promptPayQrCode = '/assets/promptpay-qr-code.jpg';
+
+        return view('order.payment-form', [
+            'promptPayQrCode' => $promptPayQrCode
         ]);
     }
+
+    public function confirmPayment(Request $request)
+    {
+        $order = auth()->user()->getCurrentOrder();
+
+        if ($order) {
+            // Validate the uploaded image
+            $request->validate([
+                'slip' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed
+            ]);
+
+            // Upload the image
+            $slipPath = $request->file('slip')->store('slips', 'public');
+
+            $order->order_address = $request->input('address');
+            // Update the order with the slip path
+            $order->order_payment_transaction_image_url = $slipPath;
+            // Update the order status to 'confirmed'
+            $order->order_status = 'confirmed';
+            $order->save();
+
+            foreach ($order->orderItems as $orderItem) {
+                $product = $orderItem->product;
+                $product->product_stock -= $orderItem->quantity;
+                $product->checkStockAndChangeStatus();
+                $product->save();
+            }
+
+            return redirect()->route('order.history')->with('success', 'Payment confirmed successfully');
+        }
+
+        return redirect()->route('order.show-payment-form')->with('error', 'No active order to confirm payment');
+    }
+
+    // public function showOrderItemDetail(OrderItem $orderItem)
+    // {
+    //     return view('order.show-order-item', [
+    //         'orderItem' => $orderItem,
+    //     ]);
+    // }
 
     // public function deleteOrderItem(OrderItem $orderItem)
     // {
@@ -162,22 +248,22 @@ class OrderController extends Controller
     // }
 
 
-    public function deleteOrderItem(OrderItem $orderItem)
-    {
-        $order = auth()->user()->getCurrentOrder();
+    // public function deleteOrderItem(OrderItem $orderItem)
+    // {
+    //     $order = auth()->user()->getCurrentOrder();
 
-        if ($order) {
-            // Check if the order item belongs to the current order
-            if ($orderItem->order_id === $order->id) {
-                $orderItem->delete();
-                // Update the total price of the order
-                $order->updateTotalPrice();
-                return redirect()->route('order.edit-cart')->with('success', 'Order item deleted successfully');
-            } else {
-                return redirect()->route('order.edit-cart')->with('error', 'Order item does not belong to your current order');
-            }
-        }
+    //     if ($order) {
+    //         // Check if the order item belongs to the current order
+    //         if ($orderItem->order_id === $order->id) {
+    //             $orderItem->delete();
+    //             // Update the total price of the order
+    //             $order->updateTotalPrice();
+    //             return redirect()->route('order.edit-cart')->with('success', 'Order item deleted successfully');
+    //         } else {
+    //             return redirect()->route('order.edit-cart')->with('error', 'Order item does not belong to your current order');
+    //         }
+    //     }
 
-        return redirect()->route('order.edit')->with('error', 'No active order to delete item from');
-    }
+    //     return redirect()->route('order.edit')->with('error', 'No active order to delete item from');
+    // }
 }

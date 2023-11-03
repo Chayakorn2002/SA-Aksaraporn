@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('order_address', 100)->nullable();
             $table->string('order_phone', 100)->nullable();
             $table->string('order_email', 100)->nullable();
+            $table->string('order_payment_transaction_image_url', 100)->nullable();
 
             $table->timestamps();
         });

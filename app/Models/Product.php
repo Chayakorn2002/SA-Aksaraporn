@@ -39,4 +39,21 @@ class Product extends Model
     {
         return $this->hasMany(ImageCatalogue::class, 'product_id');
     }
+
+    public function updateStock(int $quantity) : void
+    {
+        $this->stock -= $quantity;
+        $this->save();
+    }
+
+    public function checkStockAndChangeStatus()
+    {
+        if ($this->product_stock < $this->product_minimum_quantity) {
+            $this->product_status = 'unavailable';
+            $this->save();
+        } else if ($this->product_stock >= $this->product_minimum_quantity) {
+            $this->product_status = 'available';
+            $this->save();
+        }
+    }
 }

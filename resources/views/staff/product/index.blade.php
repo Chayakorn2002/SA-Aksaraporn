@@ -5,6 +5,23 @@
         <div class="max-w-4xl mx-auto p-2">
             <h2 class="text-4xl font-extrabold mb-4 py-8">Product Dashboard</h2>
 
+            <div class="flex items-center w-full justify-between my-8 mx-1">
+                <ul class="flex flex-row font-bold mt-0 mr-6 space-x-8 text-lg">
+                    <li>
+                        <a href="{{ route('staff.products') }}" class="text-gray-900 hover:underline"
+                            aria-current="page">All</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('staff.available-products') }}" class="text-gray-900 hover:underline"
+                            aria-current="page">Available</a>
+                    </li>
+                    <li>
+                        <a href="{{ route('staff.unavailable-products')}}" class="text-gray-900 hover:underline"
+                            aria-current="page">Unavailable</a>
+                    </li>
+                </ul>
+            </div>
+
             {{-- <div class="flex items-center w-full justify-between">
                 <ul class="flex flex-row font-medium mt-0 mr-6 space-x-8 text-sm">
                     @foreach ($categories as $category)
@@ -36,7 +53,9 @@
                             <h3 class="text-lg font-semibold mb-2">{{ $product->product_name }}</h3>
                             <p class="text-sm text-gray-500">Category: {{ $product->category->category_name }}</p>
                             <p class="text-sm text-gray-500">Price: {{ $product->product_price }}</p>
+                            <p class="text-sm text-gray-500">Minimum Quantity: {{ $product->product_minimum_quantity }}</p> 
                             <p class="text-sm text-gray-500">Stock: {{ $product->product_stock }}</p>
+                            <p class="text-sm text-gray-500">Status: {{ $product->product_status }}</p>
                         </div>
                     </a>
                 @endforeach

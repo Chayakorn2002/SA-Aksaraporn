@@ -88,7 +88,7 @@
                         </li>
 
                         <li>
-                            <a href="{{ route('profile.edit') }}" class="text-gray-900 hover:underline">Profile</a>
+                            <a href="{{ route('user.profile') }}" class="text-gray-900 hover:underline">Profile</a>
                         </li>
                     @endif
 

@@ -12,58 +12,21 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $users = User::all(); // Fetch all users
-        return view('admin.index', ['users' => $users]);
+
+    public function showActiveAccount() {
+        $users = User::where('status', 'active')->get();
+
+        return view('admin.index', [
+            'users' => $users,
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+    public function showSuspendedAccount() {
+        $users = User::where('status', 'suspended')->get();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return view('admin.index', [
+            'users' => $users,
+        ]);
     }
 
     public function showCreateAccountForm()
@@ -97,20 +60,35 @@ class AdminController extends Controller
 
         $user->save();
 
-        // $user = User::create([
-        //     'name' => $validatedData['name'],
-        //     'email' => $validatedData['email'],
-        //     'phone_number' => $request->phone_number,
-        //     'address' => $request->address,
-        //     'password' => Hash::make($validatedData['password']),
-        //     'role' => $validatedData['role'],
-        // ]);
-
         // Redirect back with a success message or handle errors
         if (isset($user) || isset($staff)) {
             return redirect()->route('home.index')->with('success', 'Account created successfully.');
         } else {
             return back()->with('error', 'Account creation failed.');
         }
+    }
+
+    public function showUserAccount($id) {
+        $user = User::find($id);
+
+        return view('admin.show-user', [
+            'user' => $user,
+        ]);
+    }
+
+    public function suspendAccount($id) {
+        $user = User::find($id);
+        $user->status = 'suspended';
+        $user->save();
+
+        return redirect()->route('home.index')->with('success', 'Account suspended successfully.');
+    }
+
+    public function activateAccount($id) {
+        $user = User::find($id);
+        $user->status = 'active';
+        $user->save();
+
+        return redirect()->route('home.index')->with('success', 'Account activated successfully.');
     }
 }

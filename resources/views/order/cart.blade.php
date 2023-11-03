@@ -50,7 +50,12 @@
                             Edit Order
                         </a>
 
-                        {{-- <form method="POST" action="{{ route('order.confirm', $currentOrder->id) }}" class="inline">
+                        <a href="{{ route('order.show-payment-form') }}" class="px-4 py-2 font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+                            Confirm Order
+                        </a>
+                        
+
+                        {{-- <form method="POST" action="{{ route('order.show-payment-form', $currentOrder->id) }}" class="inline">
                             @csrf
                             <button type="submit" class="px-4 py-2 font-semibold text-white bg-green-500 rounded-lg hover:bg-green-600">
                                 Confirm Order
