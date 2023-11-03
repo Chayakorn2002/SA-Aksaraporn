@@ -149,6 +149,9 @@ class StaffController extends Controller
         }
         
         $product->category_id = $request->category_id;
+
+        $product->checkStockAndChangeStatus();
+
         $product->save();
 
         return redirect()->route('staff.products.show', $product->id)
