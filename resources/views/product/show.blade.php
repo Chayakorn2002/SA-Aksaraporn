@@ -15,6 +15,8 @@
                 <p class="text-sm text-gray-500">Category: {{ $product->category->category_name }}</p>
             </div>
 
+            
+
             @if ($product->images)
                 <div class="border border-gray-200 rounded shadow-md p-4">
                     <h3 class="text-lg font-semibold mb-2">Product Images</h3>
@@ -25,6 +27,12 @@
                     </div>
                 </div>
             @endif
+
+            
         </div>
+        
     </section>
 @endsection
+
+
+

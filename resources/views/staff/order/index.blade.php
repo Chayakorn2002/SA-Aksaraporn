@@ -2,8 +2,22 @@
 
 @section('content')
     <section>
-        <div class="max-w-4xl mx-auto p-2">
+        <div class="w-full max-w-4xl mx-10 p-2">
             <h2 class="text-4xl font-extrabold mb-4 py-8">Order Dashboard</h2>
+
+            {{-- <div class="border-b-2 border-gray-200 dark:border-gray-700">
+                <nav class="-mb-0.5 flex space-x-6">
+                  <a class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 active" href="#" aria-current="page">
+                    Tab 1
+                  </a>
+                  <a class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600" href="#">
+                    Tab 2
+                  </a>
+                  <a class="hs-tab-active:font-semibold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-1 inline-flex items-center gap-2 border-b-[3px] border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600" href="#">
+                    Tab 3
+                  </a>
+                </nav>
+              </div> --}}
 
             <div class="flex items-center w-full justify-between my-8 mx-1">
                 <ul class="flex flex-row font-bold mt-0 mr-6 space-x-8 text-lg">

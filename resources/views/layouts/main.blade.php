@@ -12,8 +12,8 @@
 <body>
 
     @include('layouts.subviews.navbar')
-    <main class="bg-white border-black py-8 px-40 min-h-screen">
-        <div class="bg-white h-full w-full rounded-xl border-4 border-black shadow-xl">
+    <main class="bg-white py-8 px-40 min-h-screen">
+        <div class="bg-white h-full w-full">
             @yield('content')
         </div>
     </main>
