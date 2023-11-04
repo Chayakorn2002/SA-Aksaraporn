@@ -16,7 +16,7 @@
                             aria-current="page">Available</a>
                     </li>
                     <li>
-                        <a href="{{ route('staff.unavailable-products')}}" class="text-gray-900 hover:underline"
+                        <a href="{{ route('staff.unavailable-products') }}" class="text-gray-900 hover:underline"
                             aria-current="page">Unavailable</a>
                     </li>
                 </ul>
@@ -53,16 +53,22 @@
                             <h3 class="text-lg font-semibold mb-2">{{ $product->product_name }}</h3>
                             <p class="text-sm text-gray-500">Category: {{ $product->category->category_name }}</p>
                             <p class="text-sm text-gray-500">Price: {{ $product->product_price }}</p>
-                            <p class="text-sm text-gray-500">Minimum Quantity: {{ $product->product_minimum_quantity }}</p> 
+                            <p class="text-sm text-gray-500">Minimum Quantity: {{ $product->product_minimum_quantity }}</p>
                             <p class="text-sm text-gray-500">Stock: {{ $product->product_stock }}</p>
                             <p class="text-sm text-gray-500">Status: {{ $product->product_status }}</p>
                         </div>
                     </a>
                 @endforeach
 
+
+
                 @if (!$products)
                     <p class="text-gray-500">No Product Available</p>
                 @endif
+            </div>
+
+            <div class="my-8">
+                {{ $products->links() }}
             </div>
 
             <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

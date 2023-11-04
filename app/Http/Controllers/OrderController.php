@@ -14,45 +14,50 @@ class OrderController extends Controller
     {
         // Get the authenticated user's current order and past orders
         $user = auth()->user();
+        $orders = $user->orders()->orderBy("created_at", "desc")->paginate(10);
 
         return view('order.history', [
-            'orders' => $user->orders()->get(),
+            'orders' => $orders,
         ]);
     }
 
-    public function showPendingOrder() {
+    public function showPendingOrder()
+    {
         $user = auth()->user();
-        $orders = $user->orders()->where('order_status', 'pending');
+        $orders = $user->orders()->where('order_status', 'pending')->orderBy("created_at", "desc")->paginate(10);
 
         return view('order.history', [
-            'orders' => $orders->get(),
+            'orders' => $orders,
         ]);
     }
 
-    public function showConfirmedOrder() {
+    public function showConfirmedOrder()
+    {
         $user = auth()->user();
-        $orders = $user->orders()->where('order_status', 'confirmed');
+        $orders = $user->orders()->where('order_status', 'confirmed')->orderBy("created_at", "desc")->paginate(10);
 
         return view('order.history', [
-            'orders' => $orders->get(),
-        ]);
-    } 
-
-    public function showProcessingOrder() {
-        $user = auth()->user();
-        $orders = $user->orders()->where('order_status', 'processing');
-
-        return view('order.history', [
-            'orders' => $orders->get(),
+            'orders' => $orders,
         ]);
     }
 
-    public function showCompletedOrder() {
+    public function showProcessingOrder()
+    {
         $user = auth()->user();
-        $orders = $user->orders()->where('order_status', 'completed');
+        $orders = $user->orders()->where('order_status', 'processing')->orderBy("created_at", "desc")->paginate(10);;
 
         return view('order.history', [
-            'orders' => $orders->get(),
+            'orders' => $orders,
+        ]);
+    }
+
+    public function showCompletedOrder()
+    {
+        $user = auth()->user();
+        $orders = $user->orders()->where('order_status', 'completed')->orderBy("created_at", "desc")->paginate(10);
+
+        return view('order.history', [
+            'orders' => $orders,
         ]);
     }
 
@@ -213,10 +218,12 @@ class OrderController extends Controller
             $slipPath = $request->file('slip')->store('slips', 'public');
 
             $order->order_address = $request->input('address');
+            $order->order_phone = $request->input('phone');
             // Update the order with the slip path
             $order->order_payment_transaction_image_url = $slipPath;
             // Update the order status to 'confirmed'
             $order->order_status = 'confirmed';
+            $order->order_payment_transaction_date = now();
             $order->save();
 
             foreach ($order->orderItems as $orderItem) {
@@ -226,7 +233,9 @@ class OrderController extends Controller
                 $product->save();
             }
 
-            return redirect()->route('order.history')->with('success', 'Payment confirmed successfully');
+            return redirect()->route('order.show-each-order', [
+                "id" => $order->id
+            ])->with('success', 'Payment confirmed successfully');
         }
 
         return redirect()->route('order.show-payment-form')->with('error', 'No active order to confirm payment');

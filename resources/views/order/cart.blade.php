@@ -44,17 +44,29 @@
                                 </div>
                             </li>
                         @endforeach
+
+                        @if ($currentOrder->orderItems->isEmpty())
+                            <p class="text-sm text-gray-500">No order items in your cart.</p>
+                        @endif
                     </ul>
 
-                    <div class="mt-4">
-                        <a href="{{ route('order.edit-cart', $currentOrder->id) }}" class="px-4 py-2 font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-                            Edit Order
-                        </a>
+                    @if ($currentOrder->orderItems->isNotEmpty())
+                        <div class="mt-4">
+                            <a href="{{ route('order.edit-cart', $currentOrder->id) }}"
+                                class="px-4 py-2 font-semibold text-white bg-blue-500 rounded-lg hover-bg-blue-600">
+                                Edit Order
+                            </a>
 
                         <a href="{{ route('order.show-payment-form') }}" class="px-4 py-2 font-semibold text-white bg-blue-500 rounded-lg hover:bg-blue-600">
                             Confirm Order
                         </a>
                     </div>
+                            <a href="{{ route('order.show-payment-form') }}"
+                                class="px-4 py-2 font-semibold text-white bg-blue-500 rounded-lg hover-bg-blue-600">
+                                Confirm Order
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
             @else

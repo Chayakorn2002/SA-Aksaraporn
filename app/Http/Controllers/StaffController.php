@@ -14,24 +14,28 @@ class StaffController extends Controller
     /***        Product Related Methods        ***/
     public function showOverallProductView()
     {
+        $products = Product::paginate(10); 
+        $categories = Category::all();
         return view('staff.product.index', [
-            'products' => Product::all(),
-            'categories' => Category::all(),
+            'products' => $products,
+            'categories' => $categories,
         ]);
     }
 
     public function showAvailableProductView()
     {
+        $products = Product::where('product_status', 'available')->paginate(10);
         return view('staff.product.index', [
-            'products' => Product::where('product_status', 'available')->get(),
+            'products' => $products,
             'categories' => Category::all(),
         ]);
     }
 
     public function showUnavailableProductView()
     {
+        $products = Product::where('product_status', 'unavailable')->paginate(10);
         return view('staff.product.index', [
-            'products' => Product::where('product_status', 'unavailable')->get(),
+            'products' => $products,
             'categories' => Category::all(),
         ]);
     }
@@ -147,7 +151,7 @@ class StaffController extends Controller
         if (array_key_exists('images', $validatedData)) {
             $product->images = $validatedData['images'];
         }
-        
+
         $product->category_id = $request->category_id;
 
         $product->checkStockAndChangeStatus();
@@ -164,36 +168,42 @@ class StaffController extends Controller
 
     public function showOverallOrder()
     {
+        $orders = Order::orderBy("created_at", "desc")->get();
         return view('staff.order.index', [
-            'orders' => Order::all()
+            'orders' => $orders
         ]);
     }
 
+
     public function showPendingOrder()
     {
+        $orders = Order::where('order_status', 'pending')->orderBy("created_at", "desc")->get();
         return view('staff.order.index', [
-            'orders' => Order::where('order_status', 'pending')->get()
+            'orders' => $orders
         ]);
     }
 
     public function showConfirmedOrder()
     {
+        $orders = Order::where('order_status', 'confirmed')->orderBy("created_at", "desc")->get();
         return view('staff.order.index', [
-            'orders' => Order::where('order_status', 'confirmed')->get()
+            'orders' => $orders
         ]);
     }
 
     public function showProcessingOrder()
     {
+        $orders = Order::where('order_status', 'processing')->orderBy("created_at", "desc")->get();
         return view('staff.order.index', [
-            'orders' => Order::where('order_status', 'processing')->get()
+            'orders' => $orders
         ]);
     }
 
     public function showCompletedOrder()
     {
+        $orders = Order::where('order_status', 'completed')->orderBy("created_at", "desc")->get();
         return view('staff.order.index', [
-            'orders' => Order::where('order_status', 'completed')->get()
+            'orders' => $orders
         ]);
     }
 

@@ -19,14 +19,14 @@
                 <ul class="flex flex-row font-bold mt-0 mr-6 space-x-8 text-lg">
                     <li>
                         <a href="{{ route('order.history') }}" class="text-gray-900 hover:underline"
-                            aria-current="page">Home</a>
+                            aria-current="page">All</a>
                     </li>
                     <li>
                         <a href="{{ route('order.pending') }}" class="text-gray-900 hover:underline"
                             aria-current="page">Pending</a>
                     </li>
                     <li>
-                        <a href="{{ route('order.confirmed')}}" class="text-gray-900 hover:underline"
+                        <a href="{{ route('order.confirmed') }}" class="text-gray-900 hover:underline"
                             aria-current="page">Confirmed</a>
                     </li>
                     <li>
@@ -42,15 +42,20 @@
 
             @if ($orders->count() > 0)
                 @foreach ($orders as $order)
-                <a href="{{ route('order.show-each-order', ['id' => $order->id]) }}">
-                    <div class="border border-gray-200 rounded shadow-md p-4 mb-4">
-                        <!-- Order Information -->
-                        <h3 class="text-lg font-semibold mb-2">{{ $order->order_name }}</h3>
-                        <p class="text-sm text-gray-500">Order Status: {{ $order->order_status }}</p>
-                        <p class="text-sm text-gray-500">Order Total: {{ number_format($order->total_price, 2) }} ฿</p>
-                    </div>
-                </a>
+                    <a href="{{ route('order.show-each-order', ['id' => $order->id]) }}">
+                        <div class="border border-gray-200 rounded shadow-md p-4 mb-4">
+                            <!-- Order Information -->
+                            <h3 class="text-lg font-semibold mb-2">{{ $order->order_name }}</h3>
+                            <p class="text-sm text-gray-500">Order Status: {{ $order->order_status }}</p>
+                            <p class="text-sm text-gray-500">Order Total: {{ number_format($order->total_price, 2) }} ฿</p>
+                        </div>
+                    </a>
                 @endforeach
+
+                <!-- Pagination Links -->
+                <div class="mt-4">
+                    {{ $orders->links() }}
+                </div>
             @else
                 <p class="text-sm text-gray-500">No order history available.</p>
             @endif
