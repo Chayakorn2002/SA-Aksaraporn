@@ -14,7 +14,6 @@
                 <p class="text-sm text-gray-500">Status: {{ $product->product_status }}</p>
                 <p class="text-sm text-gray-500">Category: {{ $product->category->category_name }}</p>
             </div>
-
             
 
             @if ($product->images)
