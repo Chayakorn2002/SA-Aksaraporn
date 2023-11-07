@@ -24,26 +24,33 @@
                 <form method="POST" action="{{ route('order.submit-payment') }}" enctype="multipart/form-data">
                     @csrf
 
-                    <!-- Transaction Image (Slip) Upload -->
                     <div class="mb-4">
                         <label for="slip" class="block text-sm font-medium text-gray-700">Transaction Image
                             (Slip)</label>
                         <input type="file" id="slip" name="slip" accept="image/*" required>
+                        @error('slip')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <!-- Phone Number Input -->
                     <div class="mb-4">
                         <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
                         <input type="text" id="phone" name="phone"
                             class="form-input rounded-md shadow-sm border-gray-300 mt-1 block w-full"
-                            value="{{ auth()->user()->phone_number }}">
+                            value="{{ old('phone', auth()->user()->phone_number) }}">
+                        @error('phone')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
-                    <!-- Address Input -->
                     <div class="mb-4">
                         <label for="address" class="block text-sm font-medium text-gray-700">Delivery Address</label>
-                        <textarea id="address" name="address" class="form-textarea border-gray-300 rounded-md shadow-sm mt-1 block w-full">{{ auth()->user()->address }}</textarea>
+                        <textarea id="address" name="address" class="form-textarea border-gray-300 rounded-md shadow-sm mt-1 block w-full">{{ old('address', auth()->user()->address) }}</textarea>
+                        @error('address')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
+
 
                     <!-- Submit Button -->
                     <button type="submit"

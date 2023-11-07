@@ -211,7 +211,25 @@ class OrderController extends Controller
         if ($order) {
             // Validate the uploaded image
             $request->validate([
-                'slip' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', // Adjust the validation rules as needed
+                'slip' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'address' => 'required|string|max:255',
+                'phone' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    'regex:/^0[0-9]{9}$/',
+                ],
+            ], [
+                'slip.required' => 'The slip image is required.',
+                'slip.image' => 'The file must be an image (jpeg, png, jpg, gif).',
+                'slip.mimes' => 'The image must be in jpeg, png, jpg, or gif format.',
+                'slip.max' => 'The image size should not exceed 2048 KB.',
+                'address.required' => 'The delivery address is required.',
+                'address.max' => 'The delivery address should not exceed 255 characters.',
+                'phone.required' => 'The phone number is required.',
+                'phone.string' => 'The phone number must be a string.',
+                'phone.max' => 'The phone number should not exceed 255 characters.',
+                'phone.regex' => 'The phone number must be a valid Thai phone number starting with 0 and followed by 9 digits.',
             ]);
 
             // Upload the image

@@ -18,8 +18,7 @@ class CheckAccountStatus
     {
         if (auth()->check() && auth()->user()->status === 'suspended') {
             auth()->logout(); // Log the user out
-
-            return redirect()->route('login')->with('error', 'Your account is suspended. Please contact support.');
+            return redirect()->route('login')->with('error', "Your account is suspended." . PHP_EOL . "Please contact support (093-365-4750) Thank you.");
         }
 
         return $next($request);

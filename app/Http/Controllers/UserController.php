@@ -27,12 +27,24 @@ class UserController extends Controller
 
     public function updateProfile(Request $request)
     {
-        // Validate the request data
+        $customMessages = [
+            'phone_number.required' => 'Phone number is required.',
+            'phone_number.string' => 'Phone number must be a string.',
+            'phone_number.max' => 'Phone number should not exceed 255 characters.',
+            'address.required' => 'Address is required.',
+            'address.string' => 'Address must be a string.',
+            'address.max' => 'Address should not exceed 255 characters.',
+            'password.string' => 'Password must be a string.',
+            'password.min' => 'Password must be at least 6 characters long.',
+            'password.confirmed' => 'Password confirmation does not match.',
+        ];
+
+        // Validate the request data with custom error messages
         $validatedData = $request->validate([
             'phone_number' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'password' => 'nullable|string|min:6|confirmed',
-        ]);
+        ], $customMessages);
 
         // Get the authenticated user
         $user = auth()->user();
