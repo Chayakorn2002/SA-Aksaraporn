@@ -136,6 +136,21 @@ class StaffController extends Controller
             'images' => 'array', // Ensure that images is an array
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Define rules for each image
             'category_id' => 'required'
+        ], [
+            'product_name.required' => 'The product name is required.',
+            'product_name.max' => 'The product name should not exceed 100 characters.',
+            'product_description.required' => 'The product description is required.',
+            'product_description.max' => 'The product description should not exceed 100 characters.',
+            'product_price.required' => 'The product price is required.',
+            'product_minimum_quantity.required' => 'The product minimum quantity is required.',
+            'product_stock.required' => 'The product stock is required.',
+            'product_status.required' => 'The product status is required.',
+            'product_status.in' => 'Invalid product status. It should be either "available" or "unavailable".',
+            'images.array' => 'The images field should be an array.',
+            'images.*.image' => 'Each image should be a valid image (jpeg, png, jpg, gif).',
+            'images.*.mimes' => 'Each image should be in jpeg, png, jpg, or gif format.',
+            'images.*.max' => 'Each image size should not exceed 2048 KB.',
+            'category_id.required' => 'The category is required.'
         ]);
 
         $product = Product::find($request->input('product_id'));
@@ -269,7 +284,7 @@ class StaffController extends Controller
         $order->order_status = 'processing';
         $order->save();
 
-        return redirect()->route('staff.show-each-order', $id);
+        return redirect()->route('staff.processing-orders', $id);
     }
 
     public function updateOrderStatusProcessingToCompleted($id)
@@ -278,6 +293,6 @@ class StaffController extends Controller
         $order->order_status = 'completed';
         $order->save();
 
-        return redirect()->route('staff.show-each-order', $id);
+        return redirect()->route('staff.completed-orders', $id);
     }
 }

@@ -101,21 +101,21 @@
                             <div class="border rounded-lg overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead>
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Order Name</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
-                                        <th scope="col" class="px-6 py-3 text-right text-xs font-semibold text-gray-500 uppercase">Total</th>
-                                    </tr>
+                                        <div class="flex flex-row items-center px-6 py-4">
+                                            <div class="w-1/3 text-sm font-medium text-gray-800 dark:text-gray-200">Order Name</div>
+                                            <div class="w-1/3 text-sm text-left text-gray-800 dark:text-gray-200">Status</div>
+                                            <div class="w-1/3 text-sm text-right text-gray-800 dark:text-gray-200">Total</div>
+                                        </div>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                                         @if ($orders->count() > 0)
                                             @foreach ($orders as $order)
                                                 <a href="{{ route('order.show-each-order', ['id' => $order->id]) }}">
-                                                    <tr>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-gray-200">{{ $order->order_name }}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-left text-gray-800 dark:text-gray-200">{{ $order->order_status }}</td>
-                                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-800 dark:text-gray-200">฿ {{ number_format($order->total_price, 2) }}</td>
-                                                    </tr>
+                                                    <div class="flex flex-row items-center px-6 py-4">
+                                                        <div class="w-1/3 text-sm font-medium text-gray-800 dark:text-gray-200">{{ $order->order_name }}</div>
+                                                        <div class="w-1/3 text-sm text-left text-gray-800 dark:text-gray-200">{{ $order->order_status }}</div>
+                                                        <div class="w-1/3 text-sm text-right text-gray-800 dark:text-gray-200">฿ {{ number_format($order->total_price, 2) }}</div>
+                                                    </div>
                                                 </a>
                                             @endforeach
                                             {{ $orders->links() }}
