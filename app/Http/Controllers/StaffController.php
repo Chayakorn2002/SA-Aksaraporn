@@ -51,7 +51,7 @@ class StaffController extends Controller
     {
         $validatedData = $request->validate([
             'product_name' => 'required|max:100',
-            'product_description' => 'required|max:100',
+            'product_description' => 'required|max:255',
             'product_price' => ['required', 'numeric', 'min:0.01'], // Positive value validation
             'product_minimum_quantity' => ['required', 'numeric', 'min:1'], // Positive value validation
             'product_stock' => ['required', 'numeric', 'min:1'], // Positive value validation
@@ -266,6 +266,11 @@ class StaffController extends Controller
             'category_name' => 'required|max:100',
             'category_description' => 'required|max:100',
             // 'category_image' => 'requireid|max:100'
+        ], [
+            'category_name.required' => 'Category name is required.',
+            'category_name.max' => 'Category name should not exceed 100 characters.',
+            'category_description.required' => 'Category description is required.',
+            'category_description.max' => 'Category description should not exceed 100 characters.',
         ]);
 
         $category = new Category();

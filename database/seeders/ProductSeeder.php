@@ -13,6 +13,6 @@ class ProductSeeder extends Seeder
      */
     public function run()
     {
-        Product::factory(15)->stockGreaterThanOrEqualToMinimum()->create();
+        // Product::factory(15)->stockGreaterThanOrEqualToMinimum()->create();
     }
 }
