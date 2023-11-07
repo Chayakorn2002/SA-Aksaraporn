@@ -14,7 +14,7 @@ class StaffController extends Controller
     /***        Product Related Methods        ***/
     public function showOverallProductView()
     {
-        $products = Product::paginate(10); 
+        $products = Product::paginate(12);
         $categories = Category::all();
         return view('staff.product.index', [
             'products' => $products,
@@ -52,10 +52,33 @@ class StaffController extends Controller
         $validatedData = $request->validate([
             'product_name' => 'required|max:100',
             'product_description' => 'required|max:100',
-            'product_price' => 'required',
-            'product_minimum_quantity' => 'required',
-            'product_stock' => 'required',
+            'product_price' => ['required', 'numeric', 'min:0.01'], // Positive value validation
+            'product_minimum_quantity' => ['required', 'numeric', 'min:1'], // Positive value validation
+            'product_stock' => ['required', 'numeric', 'min:1'], // Positive value validation
             'category_id' => 'required',
+            'images' => 'required|array|min:1', // Ensure at least one image is required
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Define rules for each image file
+        ], [
+            'product_name.required' => 'The product name field is required.',
+            'product_name.max' => 'The product name should not exceed 100 characters.',
+            'product_description.required' => 'The product description field is required.',
+            'product_description.max' => 'The product description should not exceed 100 characters.',
+            'product_price.required' => 'The product price field is required.',
+            'product_price.numeric' => 'The product price must be a number.',
+            'product_price.min' => 'The product price should be a positive value.',
+            'product_minimum_quantity.required' => 'The product minimum quantity field is required.',
+            'product_minimum_quantity.numeric' => 'The product minimum quantity must be a number.',
+            'product_minimum_quantity.min' => 'The product minimum quantity should be a positive value.',
+            'product_stock.required' => 'The product stock field is required.',
+            'product_stock.numeric' => 'The product stock must be a number.',
+            'product_stock.min' => 'The product stock should be a positive value.',
+            'category_id.required' => 'The category ID field is required.',
+            'images.required' => 'Please upload at least one image.',
+            'images.array' => 'The uploaded images must be in an array.',
+            'images.min' => 'Please upload at least one image.',
+            'images.*.image' => 'The uploaded file must be an image.',
+            'images.*.mimes' => 'The image must be in one of the following formats: jpeg, png, jpg, or gif.',
+            'images.*.max' => 'The image size should not exceed 2MB.',
         ]);
 
         $images = [];
