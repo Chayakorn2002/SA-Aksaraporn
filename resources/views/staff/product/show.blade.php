@@ -10,13 +10,20 @@
                             <div id="gallery" class="relative w-full mt-1 ml-1" data-carousel="slide">
                                 <!-- Carousel wrapper -->
                                 <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
-                                    @foreach ($product->images as $image)
+                                    @if (is_array($product->images))
+                                        @foreach ($product->images as $image)
+                                            <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                                                <img src="{{ asset('/storage/' . $product->images[0]) }}"
+                                                    class="absolute block max-w-full h-auto -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+                                                    alt="">
+                                            </div>
+                                        @endforeach
                                         <div class="hidden duration-700 ease-in-out" data-carousel-item>
-                                            <img src="{{ asset('/storage/' . $image) }}"
+                                            <img src="{{ asset('/storage/' . $product->image) }}"
                                                 class="absolute block max-w-full h-auto -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
                                                 alt="">
                                         </div>
-                                    @endforeach
+                                    @endif
                                 </div>
                                 <!-- Slider controls -->
                                 <button type="button"

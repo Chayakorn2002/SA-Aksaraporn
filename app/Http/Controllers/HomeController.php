@@ -13,14 +13,21 @@ class HomeController extends Controller
 {
     public function index()
     {
+        
         // return view('welcome', ['users' => User::all()]);
         // return view('welcome', []);
         if (Gate::allows('isAdmin', auth()->user())) {
-            return view('admin.index', ['users' => User::all()]);
+            $users = User::orderBy("created_at", "desc")->get();
+            return view('admin.index', ['users' => $users]);
         } else if (Gate::allows('isStaff', auth()->user())) {
-            return view('staff.order.index', ['orders' => Order::all()]);
+            $orders = Order::orderBy("created_at", "desc")->get();
+            return view('staff.order.index', ['orders' => $orders]);
         } else if (Gate::allows('isUser', auth()->user())) {
-            return view('user.index', ['products' => Product::where('product_status', 'available')->get()]);
+            $products = Product::where('product_status', 'available')->paginate(12);
+            return view('user.index', [
+                'products' => $products,
+                'categories' => Category::all(),
+            ]);
         }
         else {
             return view('auth.login', ['users' => User::all()]);

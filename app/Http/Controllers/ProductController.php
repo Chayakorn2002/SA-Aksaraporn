@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -12,15 +13,34 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('product.index', ['products' => Product::all()]);
+        $products = Product::all()->paginate(12);
+
+        return view('product.index', [
+            'products' => $products,
+            'categories' => Category::all()
+        ]);
     }
+
+    public function showByCategory($id)
+    {
+        $products = Product::where('category_id', $id)
+            ->where('product_status', 'available')
+            ->paginate(12); 
+
+        $categories = Category::all();
+
+        return view('product.index-by-category', [
+            'products' => $products,
+            'categories' => $categories,
+        ]);
+    }
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        
     }
 
     /**

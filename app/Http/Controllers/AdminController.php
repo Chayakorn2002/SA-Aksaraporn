@@ -15,7 +15,7 @@ class AdminController extends Controller
 
     public function showActiveAccount()
     {
-        $users = User::where('status', 'active')->get();
+        $users = User::where('status', 'active')->orderBy("created_at", "desc")->get();
 
         return view('admin.index', [
             'users' => $users,
@@ -24,7 +24,7 @@ class AdminController extends Controller
 
     public function showSuspendedAccount()
     {
-        $users = User::where('status', 'suspended')->get();
+        $users = User::where('status', 'suspended')->orderBy("created_at", "desc")->get();
 
         return view('admin.index', [
             'users' => $users,

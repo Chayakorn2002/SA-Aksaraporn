@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\ImageCatalogue;
 use App\Models\Order;
+use App\Models\ProcessingOrderTransaction;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -14,7 +15,7 @@ class StaffController extends Controller
     /***        Product Related Methods        ***/
     public function showOverallProductView()
     {
-        $products = Product::paginate(12);
+        $products = Product::orderBy('created_at', 'desc')->paginate(12);
         $categories = Category::all();
         return view('staff.product.index', [
             'products' => $products,
@@ -24,7 +25,7 @@ class StaffController extends Controller
 
     public function showAvailableProductView()
     {
-        $products = Product::where('product_status', 'available')->paginate(10);
+        $products = Product::where('product_status', 'available')->orderBy('created_at', 'desc')->paginate(10);
         return view('staff.product.index', [
             'products' => $products,
             'categories' => Category::all(),
@@ -33,7 +34,7 @@ class StaffController extends Controller
 
     public function showUnavailableProductView()
     {
-        $products = Product::where('product_status', 'unavailable')->paginate(10);
+        $products = Product::where('product_status', 'unavailable')->orderBy('created_at', 'desc')->paginate(10);
         return view('staff.product.index', [
             'products' => $products,
             'categories' => Category::all(),
@@ -53,7 +54,7 @@ class StaffController extends Controller
             'product_name' => 'required|max:100',
             'product_description' => 'required|max:255',
             'product_price' => ['required', 'numeric', 'min:0.01'], // Positive value validation
-            'product_minimum_quantity' => ['required', 'numeric', 'min:1'], // Positive value validation
+            'product_minimum_quantity' => ['required', 'numeric', 'min:1'],
             'product_stock' => ['required', 'numeric', 'min:1'], // Positive value validation
             'category_id' => 'required',
             'images' => 'required|array|min:1', // Ensure at least one image is required
@@ -68,7 +69,7 @@ class StaffController extends Controller
             'product_price.min' => 'The product price should be a positive value.',
             'product_minimum_quantity.required' => 'The product minimum quantity field is required.',
             'product_minimum_quantity.numeric' => 'The product minimum quantity must be a number.',
-            'product_minimum_quantity.min' => 'The product minimum quantity should be a positive value.',
+            'product_minimum_quantity.min' => 'The product minimum quantity should be at least 1.',
             'product_stock.required' => 'The product stock field is required.',
             'product_stock.numeric' => 'The product stock must be a number.',
             'product_stock.min' => 'The product stock should be a positive value.',
@@ -81,14 +82,25 @@ class StaffController extends Controller
             'images.*.max' => 'The image size should not exceed 2MB.',
         ]);
 
+        // $images = [];
+
+        // foreach ($request->images as $image) {
+        //     // $fileName = uniqid() . '.' . $image->getClientOriginalExtension();
+        //     $fileName = uniqid() . '.' . $image->getClientOriginalExtension();
+        //     $image_path =  $image->storeAs('images', $fileName, 'public');
+
+        //     array_push($images, $image_path);
+        // }
+
+        // $validatedData['images'] = $images;
+
         $images = [];
 
         foreach ($request->images as $image) {
-            // $fileName = uniqid() . '.' . $image->getClientOriginalExtension();
-            $fileName = uniqid() . '.' . $image->getClientOriginalExtension();
-            $image_path =  $image->storeAs('images', $fileName, 'public');
+            $fileName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('images', $fileName, 'public');
 
-            array_push($images, $image_path);
+            array_push($images, $imagePath);
         }
 
         $validatedData['images'] = $images;
@@ -129,12 +141,12 @@ class StaffController extends Controller
         $validatedData = $request->validate([
             'product_name' => 'required|max:100',
             'product_description' => 'required|max:100',
-            'product_price' => 'required',
-            'product_minimum_quantity' => 'required', // This assumes you have a minimum quantity of 1.
-            'product_stock' => 'required',
+            'product_price' => 'required|numeric',
+            'product_minimum_quantity' => ['required', 'numeric', 'min:1'],
+            'product_stock' => 'required|numeric',
             'product_status' => 'required|in:available,unavailable',
-            'images' => 'array', // Ensure that images is an array
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Define rules for each image
+            'images' => 'array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'category_id' => 'required'
         ], [
             'product_name.required' => 'The product name is required.',
@@ -142,8 +154,12 @@ class StaffController extends Controller
             'product_description.required' => 'The product description is required.',
             'product_description.max' => 'The product description should not exceed 100 characters.',
             'product_price.required' => 'The product price is required.',
+            'product_price.numeric' => 'The product price must be a number.',
             'product_minimum_quantity.required' => 'The product minimum quantity is required.',
+            'product_minimum_quantity.numeric' => 'The product minimum quantity must be a number.',
+            'product_minimum_quantity.min' => 'The product minimum quantity should be at least 1.',
             'product_stock.required' => 'The product stock is required.',
+            'product_stock.numeric' => 'The product stock must be a number.',
             'product_status.required' => 'The product status is required.',
             'product_status.in' => 'Invalid product status. It should be either "available" or "unavailable".',
             'images.array' => 'The images field should be an array.',
@@ -153,12 +169,31 @@ class StaffController extends Controller
             'category_id.required' => 'The category is required.'
         ]);
 
+
         $product = Product::find($request->input('product_id'));
 
         // Get the paths of the existing images
         $existingImages = $product->images;
 
         // Handle image updates
+        // if ($request->hasFile('images')) {
+        //     $images = [];
+        //     foreach ($request->file('images') as $image) {
+        //         $fileName = uniqid() . '.' . $image->getClientOriginalExtension();
+        //         $imagePath = $image->storeAs('images', $fileName, 'public');
+        //         $images[] = $imagePath;
+        //     }
+        //     $validatedData['images'] = $images;
+
+        //     // Check if there are existing images
+        //     if ($existingImages) {
+        //         // Delete the existing images from the storage
+        //         foreach ($existingImages as $existingImage) {
+        //             Storage::disk('public')->delete($existingImage);
+        //         }
+        //     }
+        // }
+
         if ($request->hasFile('images')) {
             $images = [];
             foreach ($request->file('images') as $image) {
@@ -177,12 +212,14 @@ class StaffController extends Controller
             }
         }
 
-
         $product->product_name = $validatedData['product_name'];
         $product->product_description = $validatedData['product_description'];
         $product->product_price = $validatedData['product_price'];
         $product->product_minimum_quantity = $validatedData['product_minimum_quantity'];
         $product->product_stock = $validatedData['product_stock'];
+
+        $product->checkStockAndChangeStatus();
+
         $product->product_status = $validatedData['product_status'];
 
         // Check if "images" key exists in the validated data
@@ -191,8 +228,6 @@ class StaffController extends Controller
         }
 
         $product->category_id = $request->category_id;
-
-        $product->checkStockAndChangeStatus();
 
         $product->save();
 
@@ -247,8 +282,12 @@ class StaffController extends Controller
 
     public function showEachOrderView($id)
     {
+        $order = Order::find($id);
+        $transactions = $order->processingOrderTransaction()->orderBy('created_at','desc')->get();
+
         return view('staff.order.show', [
-            'order' => Order::find($id)
+            'order' => $order,
+            'transactions' => $transactions,
         ]);
     }
 
@@ -291,6 +330,43 @@ class StaffController extends Controller
 
         return redirect()->route('staff.processing-orders', $id);
     }
+
+    public function showCreateProcessingOrderTransactionForm($id)
+    {
+        $order = Order::find($id);
+
+        return view('staff.order.create-processing-order-transaction', [
+            'order' => $order
+        ]);
+    }
+
+    public function createProcessingOrderTransaction(Request $request, $orderId)
+    {
+        // Validate the request data
+        $validatedData = $request->validate([
+            'title' => 'required|max:255',
+            'description' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Upload the image
+        $imagePath = $request->file('image')->store('processing_order_transactions', 'public');
+
+        // Create the processing order transaction
+        $transaction = ProcessingOrderTransaction::create([
+            'order_id' => $orderId,
+            'user_id' => $request->user()->id,
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'image_url' => $imagePath,
+        ]);
+
+        // Optionally, you can do further processing or redirect the user
+
+        return redirect()->route('staff.show-each-order', $orderId)
+            ->with('success', 'Processing order transaction created successfully');
+    }
+
 
     public function updateOrderStatusProcessingToCompleted($id)
     {

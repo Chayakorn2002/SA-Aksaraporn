@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -71,7 +72,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view('user.index', ['user' => Auth::user(), 'products' => Product::all()]);
+        return view('user.index', [
+            'user' => Auth::user(), 
+            'products' => Product::all(), 
+            'categories' => Category::all()]);
     }
 
     /**

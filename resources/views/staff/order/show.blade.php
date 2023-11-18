@@ -2,23 +2,24 @@
 
 @section('content')
     <section>
-        <div class="max-w-7xl mx-auto rounded rounded-xl">
+        <div class="max-w-7xl mx-auto rounded-xl">
             <div class="border border-gray-100 w-full my-5 rounded-full shadow-md">
                 <h1 class="text-3xl font-bold text-center my-3">Order Detail</h1>
             </div>
             {{-- <hr class="my-3"> --}}
             <div class="grid grid-cols-2 gap-4">
                 <div class="col-span-1">
-                    <div class="rounded rounded-xl ">
+                    <div class="rounded-xl ">
                         @if ($order->order_status !== 'pending')
-                        <img src="{{ asset('/storage/' . $order->order_payment_transaction_image_url) }}" alt="Payment Slip" class="">
-                        {{-- <img class="w-full rounded-xl" src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=700&h=800&q=80" alt="Image Description"> --}}
-                        {{-- <h3 class="text-lg font-semibold my-3 text-center">Payment Transaction Image</h3> --}}
+                            <img src="{{ asset('/storage/' . $order->order_payment_transaction_image_url) }}"
+                                alt="Payment Slip" class="">
+                            {{-- <img class="w-full rounded-xl" src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=700&h=800&q=80" alt="Image Description"> --}}
+                            {{-- <h3 class="text-lg font-semibold my-3 text-center">Payment Transaction Image</h3> --}}
                         @endif
                     </div>
                 </div>
                 <div class="col-span-1">
-                    <div class="border border-gray-1oo rounded rounded-xl p-4">
+                    <div class="border border-gray-1oo rounded-xl p-4">
                         @if ($order)
                             <div class="grid grid-cols-2 text-gray-500">
 
@@ -63,7 +64,7 @@
                                 <div class="col-span-1 mb-2 text-right">
                                     <p class="text-md">{{ $order->order_email }}</p>
                                 </div>
-                                
+
                                 <div class="col-span-1 mb-2">
                                     <p class="text-md">Payment Transaction date</p>
                                 </div>
@@ -97,7 +98,7 @@
                                     <div class="col-span-1 mb-2 text-right">
                                         <p class="text-md">{{ number_format($orderItem->product->product_price, 2) }}</p>
                                     </div>
-                                    
+
                                     <div class="col-span-1 mb-2">
                                         <p class="text-md">Total Price</p>
                                     </div>
@@ -107,28 +108,75 @@
                                 </div>
 
                                 <hr class="my-3">
-
                             @endforeach
 
-                            @if ($order->order_status === 'confirmed')
-                                <form method="POST"
-                                    action="{{ route('staff.update-order-status-confirmed-to-processing', ['id' => $order->id]) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 my-1.5">
-                                        Change Status to Processing
-                                    </button>
-                                </form>
-                            @elseif ($order->order_status === 'processing')
-                                <form method="POST"
-                                    action="{{ route('staff.update-order-status-processing-to-completed', ['id' => $order->id]) }}">
-                                    @csrf
-                                    @method('PUT')
-                                    <button type="submit" class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                        Change Status to Completed
-                                    </button>
-                                </form>
-                            @endif
+                            @auth
+                                @if ($order->order_status === 'confirmed' && auth()->user()->role === 'STAFF')
+                                    <form method="POST"
+                                        action="{{ route('staff.update-order-status-confirmed-to-processing', ['id' => $order->id]) }}">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit"
+                                            onclick="return confirm('Are you sure you want to change the order status?')"
+                                            class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 my-1.5">
+                                            Change Status to Processing
+                                        </button>
+                                    </form>
+                                @elseif ($order->order_status === 'processing')
+                                    <div class="space-y-4 flex flex-col items-center">
+                                        <form method="POST"
+                                            action="{{ route('staff.update-order-status-processing-to-completed', ['id' => $order->id]) }}">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit"
+                                                onclick="return confirm('Are you sure you want to change the order status?')"
+                                                class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                                Change Status to Completed
+                                            </button>
+                                        </form>
+
+                                        <a href="{{ route('staff.show-create-processing-order-transaction-form', $order->id) }}"
+                                            class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 block">
+                                            Add Transaction
+                                        </a>
+                                    </div>
+                                    @if ($order->processingOrderTransaction->count() > 0)
+                                        <div class="mt-4">
+                                            <h3 class="text-lg font-semibold mb-2">Transactions</h3>
+                                            <ul>
+                                                @foreach ($transactions as $transaction)
+                                                    <li>
+                                                        <strong>Title:</strong> {{ $transaction->title }}<br>
+                                                        <strong>Description:</strong> {{ $transaction->description }}<br>
+                                                        <p>Datetime: {{ $transaction->created_at }}</p>
+                                                        <strong>Image:</strong> <img
+                                                            src="{{ asset('/storage/' . $transaction->image_url) }}"
+                                                            alt="Transaction Image" class="max-w-full h-auto">
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+                                @elseif ($order->order_status === 'completed')
+                                    @if ($order->processingOrderTransaction->count() > 0)
+                                        <div class="mt-4">
+                                            <h3 class="text-lg font-semibold mb-2">Transactions</h3>
+                                            <ul>
+                                                @foreach ($transactions as $transaction)
+                                                    <li>
+                                                        <strong>Title:</strong> {{ $transaction->title }}<br>
+                                                        <strong>Description:</strong> {{ $transaction->description }}<br>
+                                                        <p>Datetime: {{ $transaction->created_at }}</p>
+                                                        <strong>Image:</strong> <img
+                                                            src="{{ asset('/storage/' . $transaction->image_url) }}"
+                                                            alt="Transaction Image" class="max-w-full h-auto">
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+                                @endif
+                            @endauth
                         @endif
                     </div>
                 </div>

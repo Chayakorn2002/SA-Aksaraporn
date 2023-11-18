@@ -64,9 +64,11 @@ class OrderController extends Controller
     public function showEachOrder($id)
     {
         $order = Order::find($id);
+        $transactions = $order->processingOrderTransaction()->orderBy('created_at','desc')->get();
 
         return view('order.show', [
             'order' => $order,
+            'transactions' => $transactions,
         ]);
     }
 
@@ -97,12 +99,14 @@ class OrderController extends Controller
 
         // Validate the input (quantity)
         $request->validate([
-            'quantity' => 'required|integer|min:' . $product->product_minimum_quantity . '|max:' . $product->product_stock,
+            'quantity' => 'required|integer|min:' . $product->product_minimum_quantity . '|max:' . $product->product_stock . '|not_in:0',
         ], [
             'quantity.required' => 'Please fill in the quantity.',
             'quantity.min' => 'The quantity must be at least ' . $product->product_minimum_quantity . '.',
             'quantity.max' => 'The quantity cannot exceed the available stock of ' . $product->product_stock . '.',
+            'quantity.not_in' => 'The quantity must be greater than 0.',
         ]);
+
 
 
         // Check if the current order exists; if not, create a new order
@@ -235,6 +239,7 @@ class OrderController extends Controller
             // Upload the image
             $slipPath = $request->file('slip')->store('slips', 'public');
 
+
             $order->order_address = $request->input('address');
             $order->order_phone = $request->input('phone');
             // Update the order with the slip path
@@ -258,39 +263,4 @@ class OrderController extends Controller
 
         return redirect()->route('order.show-payment-form')->with('error', 'No active order to confirm payment');
     }
-
-    // public function showOrderItemDetail(OrderItem $orderItem)
-    // {
-    //     return view('order.show-order-item', [
-    //         'orderItem' => $orderItem,
-    //     ]);
-    // }
-
-    // public function deleteOrderItem(OrderItem $orderItem)
-    // {
-    //     // Delete the order item and handle any necessary logic
-    //     $success = $orderItem->delete();
-
-    //     return response()->json(['success' => $success]);
-    // }
-
-
-    // public function deleteOrderItem(OrderItem $orderItem)
-    // {
-    //     $order = auth()->user()->getCurrentOrder();
-
-    //     if ($order) {
-    //         // Check if the order item belongs to the current order
-    //         if ($orderItem->order_id === $order->id) {
-    //             $orderItem->delete();
-    //             // Update the total price of the order
-    //             $order->updateTotalPrice();
-    //             return redirect()->route('order.edit-cart')->with('success', 'Order item deleted successfully');
-    //         } else {
-    //             return redirect()->route('order.edit-cart')->with('error', 'Order item does not belong to your current order');
-    //         }
-    //     }
-
-    //     return redirect()->route('order.edit')->with('error', 'No active order to delete item from');
-    // }
 }

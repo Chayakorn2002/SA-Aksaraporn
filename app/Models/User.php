@@ -54,8 +54,15 @@ class User extends Authenticatable
         return $this->hasMany(Report::class);
     }
 
+    public function processingOrderTransactions() : HasMany
+    {
+        return $this->hasMany(ProcessingOrderTransaction::class);
+    }
+
     public function getCurrentOrder()
     {
         return $this->orders()->where('order_status', 'pending')->first();
     }
+
+
 }

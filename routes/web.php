@@ -156,6 +156,16 @@ Route::put(
     [StaffController::class, 'updateOrderStatusConfirmedToProcessing']
 )->name('staff.update-order-status-confirmed-to-processing');
 
+Route::get(
+    'staff/orders/{id}/create-processing-order-transaction',
+    [StaffController::class,'showCreateProcessingOrderTransactionForm']
+)->name('staff.show-create-processing-order-transaction-form');
+
+Route::post(
+    'staff/orders/{id}/create-processing-order-transaction',
+    [StaffController::class, 'createProcessingOrderTransaction']
+)->name('staff.create-processing-order-transaction');
+
 Route::put(
     '/staff/orders/{id}/processing-to-completed',
     [StaffController::class, 'updateOrderStatusProcessingToCompleted']
@@ -203,6 +213,11 @@ Route::get(
     '/products',
     [ProductController::class, 'index']
 )->name('products.index');
+
+Route::get(
+    '/products/category/{id}',
+    [ProductController::class, 'showByCategory']
+)->name('products.show-by-category');
 
 // Route::get(
 //     '/products/{id}',

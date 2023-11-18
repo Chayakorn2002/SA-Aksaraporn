@@ -13,8 +13,9 @@
                                 class="border border-gray-200 rounded shadow-md p-4 hover:bg-gray-50 transition duration-300">
                                 <h3 class="text-lg font-semibold mb-2">{{ $product->product_name }}</h3>
                                 <p class="text-sm text-gray-500">Price: ${{ $product->proprice }}</p>
-
+                                <p class="text-sm text-gray-500">Stock: ${{ $product->proprice }}</p>
                                 <!-- Add more product details here -->
+
                             </div>
                         </a>
                     @endforeach

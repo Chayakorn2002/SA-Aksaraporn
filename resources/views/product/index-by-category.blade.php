@@ -25,6 +25,7 @@
                 @endforeach
             </div>
 
+
             <div class="my-5">
                 {{ $products->links() }}
             </div>

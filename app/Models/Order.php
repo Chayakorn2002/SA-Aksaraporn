@@ -27,6 +27,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function processingOrderTransaction(): HasMany
+    {
+        return $this->hasMany(ProcessingOrderTransaction::class);
+    }
+
     // public function updateTotalPrice() : void
     // {
     //     $this->total_price = $this->products->sum(function (Product $product) {
