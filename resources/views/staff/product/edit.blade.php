@@ -17,7 +17,7 @@
                         </div>
                         <div class="col-span-2 my-2">
                             <select name="category_id" id="category_id"
-                                class="py-2 px-3 pr-11 block w-full border-gray-300 rounded rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500">
+                                class="py-2 px-3 pr-11 block w-full border-gray-300 rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500">
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->category_name }}</option>
                                 @endforeach
@@ -32,7 +32,7 @@
                         </div>
                         <div class="col-span-2 my-2">
                             <input type="text" name="product_name" id="product_name"
-                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
                                 value="{{ $product->product_name }}">
                             @error('product_name')
                                 <div class="text-sm text-red-600">{{ $message }}</div>
@@ -44,7 +44,7 @@
                         </div>
                         <div class="col-span-2 my-2">
                             <input type="text" name="product_description" id="product_description"
-                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
                                 value="{{ $product->product_description }}">
                             @error('product_description')
                                 <div class="text-sm text-red-600">{{ $message }}</div>
@@ -56,7 +56,7 @@
                         </div>
                         <div class="col-span-2 my-2">
                             <input type="text" name="product_price" id="product_price"
-                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
                                 value="{{ $product->product_price }}">
                             @error('product_price')
                                 <div class="text-sm text-red-600">{{ $message }}</div>
@@ -69,7 +69,7 @@
                         </div>
                         <div class="col-span-2 my-2">
                             <input type="text" name="product_minimum_quantity" id="product_minimum_quantity"
-                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
                                 value="{{ $product->product_minimum_quantity }}">
                             @error('product_minimum_quantity')
                                 <div class="text-sm text-red-600">{{ $message }}</div>
@@ -81,7 +81,7 @@
                         </div>
                         <div class="col-span-2 my-2">
                             <input type="text" name="product_stock" id="product_stock"
-                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
+                                class="form-input py-2 px-3 pr-11 block w-full border-gray-300 rounded-xl shadow-sm text-sm relative focus:z-10 focus:border-blue-500 focus:ring-blue-500"
                                 value="{{ $product->product_stock }}">
                             @error('product_stock')
                                 <div class="text-sm text-red-600">{{ $message }}</div>

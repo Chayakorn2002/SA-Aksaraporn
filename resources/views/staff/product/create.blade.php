@@ -2,7 +2,7 @@
 
 @section('content')
     <section>
-        <div class="max-w-4xl mx-auto py-6 px-6 border border-gray-200 rounded rounded-xl shadow-md">
+        <div class="max-w-4xl mx-auto py-6 px-6 border border-gray-200 rounded-xl shadow-md">
             <h1 class="text-lg font-semibold mb-5">Add Product</h1>
             <form method="POST" action="{{ route('staff.add-product') }}" enctype="multipart/form-data">
                 @csrf
