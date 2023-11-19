@@ -34,8 +34,14 @@
                     <a href="{{ route('order.add-order-item', ['id' => $product->id]) }}"
                         class="flex flex-col group bg-white border border-gray-200 shadow-sm rounded-xl overflow-hidden hover:shadow-lg transition">
                         <div class="relative pt-[50%] sm:pt-[60%] lg:pt-[80%] rounded-t-xl overflow-hidden">
-                            <img class="w-full h-full absolute top-0 left-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out rounded-t-xl"
-                                src="{{ asset('/storage/' . $product->images[0]) }}">
+                            @if (is_array($product->images) && count($product->images) > 0)
+                                <img class="w-full h-full absolute top-0 left-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out rounded-t-xl"
+                                    src="{{ asset('/storage/' . $product->images[0]) }}">
+                            @else
+                                {{-- Placeholder or default image when there is no product image --}}
+                                <img class="w-full h-full absolute top-0 left-0 object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out rounded-t-xl"
+                                    src="{{ asset('path_to_placeholder_image.jpg') }}" alt="Placeholder Image">
+                            @endif
                         </div>
                         <div class="p-4 md:p-5">
                             <h3 class="text-xl font-bold text-gray-800 dark:text-white">
@@ -52,7 +58,6 @@
                             <p class="mt-1 text-gray-800 dark:text-gray-400">
                                 Stock : {{ $product->product_stock }}
                             </p>
-
                         </div>
                     </a>
                 @endforeach
