@@ -113,65 +113,112 @@
                             @auth
                                 @if ($order->order_status === 'confirmed' && auth()->user()->role === 'STAFF')
                                     <form method="POST"
-                                        action="{{ route('staff.update-order-status-confirmed-to-processing', ['id' => $order->id]) }}">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit"
-                                            onclick="return confirm('Are you sure you want to change the order status?')"
-                                            class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 my-1.5">
-                                            Change Status to Processing
-                                        </button>
+                                    action="{{ route('staff.update-order-status-confirmed-to-processing', ['id' => $order->id]) }}">
+                                    @csrf
+                                    @method('PUT')
+                                    <button type="submit"
+                                        onclick="return confirm('Are you sure you want to change the order status?')"
+                                        class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                        Change Status to Processing
+                                    </button>
                                     </form>
+
                                 @elseif ($order->order_status === 'processing')
-                                    <div class="space-y-4 flex flex-col items-center">
-                                        <form method="POST"
-                                            action="{{ route('staff.update-order-status-processing-to-completed', ['id' => $order->id]) }}">
-                                            @csrf
-                                            @method('PUT')
-                                            <button type="submit"
-                                                onclick="return confirm('Are you sure you want to change the order status?')"
-                                                class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                                                Change Status to Completed
-                                            </button>
-                                        </form>
-
-                                        <a href="{{ route('staff.show-create-processing-order-transaction-form', $order->id) }}"
-                                            class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 block">
-                                            Add Transaction
-                                        </a>
-                                    </div>
-                                    @if ($order->processingOrderTransaction->count() > 0)
-                                        <div class="mt-4">
-                                            <h3 class="text-lg font-semibold mb-2">Transactions</h3>
-                                            <ul>
-                                                @foreach ($transactions as $transaction)
-                                                    <li>
-                                                        <strong>Title:</strong> {{ $transaction->title }}<br>
-
-                                                        @if ($transaction->description !== null)
-                                                            <strong>Description:</strong> {{ $transaction->description }}<br>
-                                                        @endif
-
-                                                        <p>Datetime: {{ $transaction->created_at }}</p>
-
-                                                        @if ($transaction->image_url !== null)
-                                                            <strong>Image:</strong>
-                                                            <img src="{{ asset('/storage/' . $transaction->image_url) }}"
-                                                                alt="" class="max-w-full h-auto">
-                                                        @endif
-                                                    </li>
-                                                    <hr class="my-2">
-                                                @endforeach
-                                            </ul>
+                                    <div class="grid grid-cols-2 space-x-2">
+                                        <div class="col-span-1">
+                                            <form method="POST"
+                                                action="{{ route('staff.update-order-status-processing-to-completed', ['id' => $order->id]) }}">
+                                                @csrf
+                                                @method('PUT')
+                                                <button type="submit"
+                                                    onclick="return confirm('Are you sure you want to change the order status?')"
+                                                    class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                                    Change Status to Completed
+                                                </button>
+                                            </form>
                                         </div>
-                                    @endif
+                                        <div class="col-span-1">
+                                            <a href="{{ route('staff.show-create-processing-order-transaction-form', $order->id) }}"
+                                                class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 block text-center">
+                                                Add Transaction
+                                            </a>
+                                        </div>
+                                    </div>
+                                    
+                                    @if ($order->processingOrderTransaction->count() > 0)
+                                    <div class="mt-4">
+                                        <h3 class="col-span-2 text-lg font-semibold my-4">Transactions</h3>
+                                        
+                                        <ul>
+                                            @foreach ($transactions as $transaction)
+                                                <div class="grid grid-cols-2">
+                                                    <div class="col-span-1">
+                                                        <p class="text-md">Title</p>
+                                                    </div>
+                                                    <div class="col-span-1">
+                                                        <p class="text-md text-right">{{ $transaction->title }}</p>
+                                                    </div>
+
+                                                    <div class="col-span-1">
+                                                        <p class="text-md">Date Time</p>
+                                                    </div>
+                                                    <div class="col-span-1">
+                                                        <p class="text-md text-right"> {{ $transaction->created_at }}</p>
+                                                    </div>
+
+                                                    @if ($transaction->image_url !== null)
+                                                        <img src="{{ asset('/storage/' . $transaction->image_url) }}"
+                                                            alt="" class="max-w-full h-auto">
+                                                    @endif
+                                                </div>
+                                                {{-- <li>
+                                                    <strong>Title:</strong> {{ $transaction->title }}<br>
+
+                                                    @if ($transaction->description !== null)
+                                                        <strong>Description:</strong> {{ $transaction->description }}<br>
+                                                    @endif
+
+                                                    <p>Datetime: {{ $transaction->created_at }}</p>
+
+                                                    @if ($transaction->image_url !== null)
+                                                        <strong>Image:</strong>
+                                                        <img src="{{ asset('/storage/' . $transaction->image_url) }}"
+                                                            alt="" class="max-w-full h-auto">
+                                                    @endif
+                                                </li> --}}
+                                                <hr class="my-2">
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+
                                 @elseif ($order->order_status === 'completed')
                                     @if ($order->processingOrderTransaction->count() > 0)
                                         <div class="mt-4">
                                             <h3 class="text-lg font-semibold mb-2">Transactions</h3>
                                             <ul>
                                                 @foreach ($transactions as $transaction)
-                                                    <li>
+                                                    <div class="grid grid-cols-2">
+                                                        <div class="col-span-1">
+                                                            <p class="text-md mb-2 mt-6">Title</p>
+                                                        </div>
+                                                        <div class="col-span-1">
+                                                            <p class="text-md text-right mb-2 mt-6">{{ $transaction->title }}</p>
+                                                        </div>
+
+                                                        <div class="col-span-1">
+                                                            <p class="text-md ">Date Time</p>
+                                                        </div>
+                                                        <div class="col-span-1">
+                                                            <p class="text-md text-right"> {{ $transaction->created_at }}</p>
+                                                        </div>
+
+                                                        @if ($transaction->image_url !== null)
+                                                            <img src="{{ asset('/storage/' . $transaction->image_url) }}"
+                                                                alt="" class="max-w-full h-auto">
+                                                        @endif
+                                                    </div>
+                                                    {{-- <li>
                                                         <strong>Title:</strong> {{ $transaction->title }}<br>
 
                                                         @if ($transaction->description !== null)
@@ -185,7 +232,7 @@
                                                             <img src="{{ asset('/storage/' . $transaction->image_url) }}"
                                                                 alt="" class="max-w-full h-auto">
                                                         @endif
-                                                    </li>
+                                                    </li> --}}
                                                     <hr class="my-2">
                                                 @endforeach
                                             </ul>
