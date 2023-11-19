@@ -283,7 +283,7 @@ class StaffController extends Controller
     public function showEachOrderView($id)
     {
         $order = Order::find($id);
-        $transactions = $order->processingOrderTransaction()->orderBy('created_at','desc')->get();
+        $transactions = $order->processingOrderTransaction()->orderBy('created_at', 'desc')->get();
 
         return view('staff.order.show', [
             'order' => $order,
@@ -345,12 +345,16 @@ class StaffController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'title' => 'required|max:255',
-            'description' => 'required',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'description' => 'nullable', 
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Upload the image
-        $imagePath = $request->file('image')->store('processing_order_transactions', 'public');
+        // Check if an image is provided
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            // Upload the image
+            $imagePath = $request->file('image')->store('processing_order_transactions', 'public');
+        }
 
         // Create the processing order transaction
         $transaction = ProcessingOrderTransaction::create([
@@ -361,11 +365,11 @@ class StaffController extends Controller
             'image_url' => $imagePath,
         ]);
 
-        // Optionally, you can do further processing or redirect the user
-
         return redirect()->route('staff.show-each-order', $orderId)
             ->with('success', 'Processing order transaction created successfully');
     }
+
+
 
 
     public function updateOrderStatusProcessingToCompleted($id)

@@ -147,12 +147,20 @@
                                                 @foreach ($transactions as $transaction)
                                                     <li>
                                                         <strong>Title:</strong> {{ $transaction->title }}<br>
-                                                        <strong>Description:</strong> {{ $transaction->description }}<br>
+
+                                                        @if ($transaction->description !== null)
+                                                            <strong>Description:</strong> {{ $transaction->description }}<br>
+                                                        @endif
+
                                                         <p>Datetime: {{ $transaction->created_at }}</p>
-                                                        <strong>Image:</strong> <img
-                                                            src="{{ asset('/storage/' . $transaction->image_url) }}"
-                                                            alt="Transaction Image" class="max-w-full h-auto">
+
+                                                        @if ($transaction->image_url !== null)
+                                                            <strong>Image:</strong>
+                                                            <img src="{{ asset('/storage/' . $transaction->image_url) }}"
+                                                                alt="" class="max-w-full h-auto">
+                                                        @endif
                                                     </li>
+                                                    <hr class="my-2">
                                                 @endforeach
                                             </ul>
                                         </div>
@@ -165,12 +173,20 @@
                                                 @foreach ($transactions as $transaction)
                                                     <li>
                                                         <strong>Title:</strong> {{ $transaction->title }}<br>
-                                                        <strong>Description:</strong> {{ $transaction->description }}<br>
+
+                                                        @if ($transaction->description !== null)
+                                                            <strong>Description:</strong> {{ $transaction->description }}<br>
+                                                        @endif
+
                                                         <p>Datetime: {{ $transaction->created_at }}</p>
-                                                        <strong>Image:</strong> <img
-                                                            src="{{ asset('/storage/' . $transaction->image_url) }}"
-                                                            alt="Transaction Image" class="max-w-full h-auto">
+
+                                                        @if ($transaction->image_url !== null)
+                                                            <strong>Image:</strong>
+                                                            <img src="{{ asset('/storage/' . $transaction->image_url) }}"
+                                                                alt="" class="max-w-full h-auto">
+                                                        @endif
                                                     </li>
+                                                    <hr class="my-2">
                                                 @endforeach
                                             </ul>
                                         </div>
