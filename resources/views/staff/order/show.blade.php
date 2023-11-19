@@ -145,22 +145,21 @@
                                             <h3 class="text-lg font-semibold mb-2">Transactions</h3>
                                             <ul>
                                                 @foreach ($transactions as $transaction)
-                                                    <li>
-                                                        <strong>Title:</strong> {{ $transaction->title }}<br>
+                                                    <li class="mb-4 border-b pb-4">
+                                                        <strong
+                                                            class="block text-blue-500 mb-1">{{ $transaction->title }}</strong>
 
                                                         @if ($transaction->description !== null)
-                                                            <strong>Description:</strong> {{ $transaction->description }}<br>
+                                                            <p class="text-gray-700 mb-2">{{ $transaction->description }}</p>
                                                         @endif
 
-                                                        <p>Datetime: {{ $transaction->created_at }}</p>
+                                                        <p class="text-gray-500">{{ $transaction->created_at }}</p>
 
                                                         @if ($transaction->image_url !== null)
-                                                            <strong>Image:</strong>
                                                             <img src="{{ asset('/storage/' . $transaction->image_url) }}"
-                                                                alt="" class="max-w-full h-auto">
+                                                                alt="" class="max-w-full h-auto mt-2">
                                                         @endif
                                                     </li>
-                                                    <hr class="my-2">
                                                 @endforeach
                                             </ul>
                                         </div>
@@ -171,22 +170,21 @@
                                             <h3 class="text-lg font-semibold mb-2">Transactions</h3>
                                             <ul>
                                                 @foreach ($transactions as $transaction)
-                                                    <li>
-                                                        <strong>Title:</strong> {{ $transaction->title }}<br>
+                                                    <li class="mb-4 border-b pb-4">
+                                                        <strong
+                                                            class="block text-blue-500 mb-1">{{ $transaction->title }}</strong>
 
                                                         @if ($transaction->description !== null)
-                                                            <strong>Description:</strong> {{ $transaction->description }}<br>
+                                                            <p class="text-gray-700 mb-2">{{ $transaction->description }}</p>
                                                         @endif
 
-                                                        <p>Datetime: {{ $transaction->created_at }}</p>
+                                                        <p class="text-gray-500">{{ $transaction->created_at }}</p>
 
                                                         @if ($transaction->image_url !== null)
-                                                            <strong>Image:</strong>
                                                             <img src="{{ asset('/storage/' . $transaction->image_url) }}"
-                                                                alt="" class="max-w-full h-auto">
+                                                                alt="" class="max-w-full h-auto mt-2">
                                                         @endif
                                                     </li>
-                                                    <hr class="my-2">
                                                 @endforeach
                                             </ul>
                                         </div>
