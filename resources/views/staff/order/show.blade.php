@@ -136,9 +136,10 @@
                                         </form>
 
                                         <a href="{{ route('staff.show-create-processing-order-transaction-form', $order->id) }}"
-                                            class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 block">
+                                            class="w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 block text-center">
                                             Add Transaction
                                         </a>
+                                        
                                     </div>
                                     @if ($order->processingOrderTransaction->count() > 0)
                                         <div class="mt-4">

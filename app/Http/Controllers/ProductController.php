@@ -25,6 +25,7 @@ class ProductController extends Controller
     {
         $products = Product::where('category_id', $id)
             ->where('product_status', 'available')
+            ->orderBy('created_at', 'desc')
             ->paginate(12); 
 
         $categories = Category::all();

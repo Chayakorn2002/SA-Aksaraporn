@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('order_status', 100)->default('pending')->comment('pending, confirmed, processing, completed');
             
             // user's information for each orders
-            $table->string('order_address', 100)->nullable();
+            $table->text('order_address')->nullable();
             $table->string('order_phone', 100)->nullable();
             $table->string('order_email', 100)->nullable();
             $table->string('order_payment_transaction_image_url', 100)->nullable();

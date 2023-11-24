@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('processing_order_transactions', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             // $table->string('transaction_type');
             $table->string('image_url')->nullable();
 

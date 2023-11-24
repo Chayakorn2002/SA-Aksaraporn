@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdfor(Product::class);
             $table->string('image_name', 100);
-            $table->string('image_description', 100);
+            $table->text('image_description')->nullable();
             $table->string('image_url', 100);
             $table->timestamps();
         });

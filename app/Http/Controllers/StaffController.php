@@ -52,10 +52,10 @@ class StaffController extends Controller
     {
         $validatedData = $request->validate([
             'product_name' => 'required|max:100',
-            'product_description' => 'required|max:255',
-            'product_price' => ['required', 'numeric', 'min:0.01'], // Positive value validation
-            'product_minimum_quantity' => ['required', 'numeric', 'min:1'],
-            'product_stock' => ['required', 'numeric', 'min:1'], // Positive value validation
+            'product_description' => 'required',
+            'product_price' => ['required', 'numeric', 'min:0.01', 'max:10000'], // Positive value validation
+            'product_minimum_quantity' => ['required', 'numeric', 'min:1', 'max:1000000'],
+            'product_stock' => ['required', 'numeric', 'min:1', 'max:1000000'],
             'category_id' => 'required',
             'images' => 'required|array|min:1', // Ensure at least one image is required
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Define rules for each image file
@@ -63,16 +63,18 @@ class StaffController extends Controller
             'product_name.required' => 'The product name field is required.',
             'product_name.max' => 'The product name should not exceed 100 characters.',
             'product_description.required' => 'The product description field is required.',
-            'product_description.max' => 'The product description should not exceed 100 characters.',
             'product_price.required' => 'The product price field is required.',
             'product_price.numeric' => 'The product price must be a number.',
             'product_price.min' => 'The product price should be a positive value.',
+            'product_price.max' => 'the stock value should not be more than 10,000.',
             'product_minimum_quantity.required' => 'The product minimum quantity field is required.',
             'product_minimum_quantity.numeric' => 'The product minimum quantity must be a number.',
             'product_minimum_quantity.min' => 'The product minimum quantity should be at least 1.',
+            'product_minimum_quantity.max' => 'the stock value should not be more than 1 million.',
             'product_stock.required' => 'The product stock field is required.',
             'product_stock.numeric' => 'The product stock must be a number.',
             'product_stock.min' => 'The product stock should be a positive value.',
+            'product_stock.max' => 'the stock value should not be more than 1 million.',
             'category_id.required' => 'The category ID field is required.',
             'images.required' => 'Please upload at least one image.',
             'images.array' => 'The uploaded images must be in an array.',
@@ -140,10 +142,10 @@ class StaffController extends Controller
     {
         $validatedData = $request->validate([
             'product_name' => 'required|max:100',
-            'product_description' => 'required|max:100',
-            'product_price' => 'required|numeric',
-            'product_minimum_quantity' => ['required', 'numeric', 'min:1'],
-            'product_stock' => 'required|numeric',
+            'product_description' => 'required',
+            'product_price' => ['required', 'numeric', 'min:0.01', 'max:10000'], // Positive value validation
+            'product_minimum_quantity' => ['required', 'numeric', 'min:1', 'max:1000000'],
+            'product_stock' => ['required', 'numeric', 'min:1', 'max:1000000'],
             'product_status' => 'required|in:available,unavailable',
             'images' => 'array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -152,7 +154,6 @@ class StaffController extends Controller
             'product_name.required' => 'The product name is required.',
             'product_name.max' => 'The product name should not exceed 100 characters.',
             'product_description.required' => 'The product description is required.',
-            'product_description.max' => 'The product description should not exceed 100 characters.',
             'product_price.required' => 'The product price is required.',
             'product_price.numeric' => 'The product price must be a number.',
             'product_minimum_quantity.required' => 'The product minimum quantity is required.',
@@ -206,8 +207,10 @@ class StaffController extends Controller
             // Check if there are existing images
             if ($existingImages) {
                 // Delete the existing images from the storage
-                foreach ($existingImages as $existingImage) {
-                    Storage::disk('public')->delete($existingImage);
+                if (is_array($existingImages)) {
+                    foreach ($existingImages as $existingImage) {
+                        Storage::disk('public')->delete($existingImage);
+                    }
                 }
             }
         }
@@ -345,7 +348,7 @@ class StaffController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'title' => 'required|max:255',
-            'description' => 'nullable', 
+            'description' => 'nullable',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 

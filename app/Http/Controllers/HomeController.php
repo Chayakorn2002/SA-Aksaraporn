@@ -23,7 +23,8 @@ class HomeController extends Controller
             $orders = Order::orderBy("created_at", "desc")->get();
             return view('staff.order.index', ['orders' => $orders]);
         } else if (Gate::allows('isUser', auth()->user())) {
-            $products = Product::where('product_status', 'available')->paginate(12);
+            $products = Product::where('product_status', 'available')->orderBy('created_at', 'desc')->paginate(12);
+
             return view('user.index', [
                 'products' => $products,
                 'categories' => Category::all(),
